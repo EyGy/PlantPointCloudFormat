@@ -185,9 +185,6 @@ Include when information is available.
 | plant_category | string | Grouping to identify structurally similar plants | See vocabulary below |
 | dataset_name | string | Parent dataset identifier | BonnBeetClouds |
 
-Monocots (sorghum/maize/wheat), Dicots-rosette (strawberry, sugar beets) , Dicots-bushy/woody (pepper, soy, rose, etc.) 
-
-Indoor/Field/Box etc. 
 **Plant category vocabulary**:
 
 | Value | Description |
