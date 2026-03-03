@@ -1,10 +1,10 @@
 # Plant Point Cloud Format (PPF) Specification
 
-**Version 1.0 — Draft**
+**Version 1.0 — Draft 0.1**
 
 **Status**: Draft — Open for community feedback
 
-**Last Updated**: [DATE]
+**Last Updated**: 2026-03-03 (YYYY-MM-DD)
 
 ---
 
@@ -35,28 +35,14 @@
 ### 1.1 Purpose
 
 The Plant Point Cloud Format (PPF) is a standardized format for representing individual plant point clouds, designed specifically for plant phenotyping, agricultural research, and machine learning applications.
-To address current challenges in plant point cloud research PPF defines:
 
-- Consistent file structure based on PLY
-- Standardized semantic and instance labeling (incl. spatio-temporal and hierachical labels)
-- Clear conventions for temporal datasets
-- Flexible but structured metadata system
-
-### 1.2 Design Principles
-
-1. **Simplicity**: Use existing, well-supported formats (PLY, JSON)
-2. **Self-containment**: Each PLY contains essential metadata
-3. **Flexibility**: Support diverse use cases
-4. **ML-readiness**: Designed for proper train/val/test splitting
-5. **Community-driven**: Open specification
-
-### 1.3 Scope
+### 1.2 Scope
 
 **In scope (v1.0)**:
 - Individual plant point clouds (one plant per file)
 - Semantic and instance segmentation labels
 - Hierarchical organ relationships
-- Temporal (time-series) datasets
+- Spatio-temporal (time-series) datasets
 - Dataset organization and metadata
 
 **Out of scope (v1.0)**:
@@ -72,12 +58,8 @@ To address current challenges in plant point cloud research PPF defines:
 ### 2.1 Base Format: PLY
 
 PPF uses the **Polygon File Format (PLY)** as its base.
+PLY files are supported by Open3D, trimesh, plyfile, CloudCompare, MeshLab, and many more.
 
-**Advantages**:
-- Wide library support (Open3D, trimesh, plyfile, CloudCompare, MeshLab)
-- Familiar to CV/ML community
-- Custom properties support
-- Binary and ASCII encoding options
 
 ### 2.2 Encoding
 
@@ -88,11 +70,11 @@ PPF uses the **Polygon File Format (PLY)** as its base.
 
 **Requirement**: PPF-compliant tools MUST support both encodings.
 
-**Recommendation**: Distribute in binary with 1-2 ASCII examples.
+**Recommendation for new datasets**: Distribute in binary with 1-2 ASCII examples.
 
 ### 2.3 Coordinate System Conventions
 
-All PPF point clouds MUST use these conventions:
+**All PPF point clouds MUST use these conventions:**
 
 | Property | Convention | Notes |
 |----------|------------|-------|
@@ -100,13 +82,12 @@ All PPF point clouds MUST use these conventions:
 | **Up axis** | Z-positive | Z increases upward |
 | **Origin** | Median-centered | Origin at median(X), median(Y), median(Z) |
 
-#### 2.3.1 Why Median-Centered Origin?
+#### Why Median-Centered Origin?
 
 - Computable without labels (works for unlabeled data)
 - Robust to outliers
 - Normalizes spatial distribution across plant architectures
 
-**Preprocessing requirement**: Transform all point clouds to this coordinate system before PPF conversion.
 
 ### 2.4 One Plant Per File
 
@@ -161,16 +142,7 @@ end_header
 
 Required when specific conditions apply.
 
-#### 3.2.1 Temporal Dataset Fields
-
-**Required if**: Plant is part of a temporal (time-series) dataset.
-
-| Key | Type | Description | Example |
-|-----|------|-------------|---------|
-| subject_id | string | Persistent ID across timepoints | plant_001 |
-| timepoint_index | integer | Zero-indexed temporal ordering | 0, 1, 2 |
-
-#### 3.2.2 Annotation Fields
+#### 3.2.1 Annotation Fields
 
 **Required if**: Point cloud contains annotations.
 
@@ -187,6 +159,16 @@ Required when specific conditions apply.
 | 1, 2, 3, ... | Distinct instance IDs |
 
 **Important**: Instance IDs are unique **within each semantic class**, not globally.
+
+#### 3.2.2 Temporal Dataset Fields
+
+**Required if**: Plant is part of a temporal (time-series) dataset.
+
+| Key | Type | Description | Example |
+|-----|------|-------------|---------|
+| subject_id | string | Persistent ID across timepoints | plant_001 |
+| timepoint_index | integer | Zero-indexed temporal ordering | 0, 1, 2 |
+
 
 ### 3.3 Recommended Fields
 
@@ -233,7 +215,7 @@ Include when information is available.
 
 | Key | Type | Description | Example |
 |-----|------|-------------|---------|
-| growth_stage | string | BBCH code or DAE | BBCH_14, DAE_21 |
+| growth_stage | string | BBCH code or DAE (Days after emergence) | BBCH_14, DAE_21 |
 | cultivar | string | Cultivar/genotype | Col-0 |
 | treatment | string | Experimental treatment | drought_stress |
 | processing_level | string | Processing stage | raw, cleaned |
@@ -323,8 +305,8 @@ Use these IDs for common classes to maximize interoperability:
 |----|------|------|-----------|
 | 0 | unlabeled | void | [128, 128, 128] |
 | 1 | leaf | thing | [0, 255, 0] |
-| 2 | stem | stuff | [139, 69, 19] |
-| 3 | petiole | stuff | [0, 128, 0] |
+| 2 | stem | thing | [139, 69, 19] |
+| 3 | petiole | thing | [0, 128, 0] |
 | 4 | flower | thing | [255, 255, 0] |
 | 5 | fruit | thing | [255, 0, 0] |
 | 6 | root | thing | [128, 64, 0] |
@@ -335,9 +317,7 @@ Datasets with additional classes SHOULD use IDs >= 10.
 
 ---
 
-## 5. Hierarchical Instance Labeling
-
-**Status**: Optional extension
+## 5. Hierarchical Instance Labeling (optional extension)
 
 ### 5.1 Motivation
 
@@ -827,12 +807,6 @@ element face 10000
 property list uchar int vertex_indices
 ```
 
-#### Uncertainty Quantification
-
-```ply
-property float semantic_entropy
-property float instance_confidence
-```
 
 ### 10.3 Contributing
 
@@ -849,7 +823,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - comment ppf_version 1.0
 - comment plant_id [unique_id]
 - property float x/y/z
-- Coordinates: mm, Z-up, median-centered
+- Coordinates must match unified format: scaled in mm, Z-up, coordinate origin is median-centered
 
 If temporal:
   - comment subject_id

@@ -1,11 +1,11 @@
 # Plant Point Cloud Format (PPF)
 
-[![Specification Version](https://img.shields.io/badge/spec-v1.0--draft-blue.svg)](SPECIFICATION.md)
+[![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md)
 [![License]ToDo ](LICENSE)
 
 **A standardized format for plant point clouds in phenotyping and agricultural applications.**
 
-See --> [SPECIFICATION.md] for PPF data format documentation.
+See --> [![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md) for current PPF data format documentation.
 ---
 
 ## Overview
