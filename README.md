@@ -1,7 +1,7 @@
 # Plant Point Cloud Format (PPF)
 
 [![Specification Version](https://img.shields.io/badge/spec-v1.0--draft-blue.svg)](SPECIFICATION.md)
-[![License](https://img.shields.io/badge/license-CC--BY--4.0-green.svg)](LICENSE)
+[![License]ToDo ](LICENSE)
 
 **A standardized format for plant point clouds in phenotyping and agricultural applications.**
 
@@ -11,9 +11,10 @@
 
 PPF defines a consistent, interoperable format for representing individual plant point clouds with:
 
+- **Unified and structured format for all kinds of single plant scans**
 - **Semantic and instance segmentation labels**
-- **Temporal (time-series) dataset support**
-- **Hierarchical organ relationships** (optional)
+- **Spatio-Temporal (time-series) dataset support**
+- **Hierarchical organ relationships**
 - **Rich metadata** for reproducible research
 
 Built on the widely-supported PLY format with structured metadata conventions.
@@ -22,7 +23,7 @@ Built on the widely-supported PLY format with structured metadata conventions.
 
 ## Quick Start
 
-### Installation
+### Installation / Requirements
 
 ```bash
 pip install numpy plyfile
@@ -142,11 +143,13 @@ For interoperability, use these IDs for common classes:
 |----|------|------|
 | 0 | unlabeled | void |
 | 1 | leaf | thing |
-| 2 | stem | stuff |
-| 3 | petiole | stuff |
+| 2 | stem | thing |
+| 3 | petiole | thing |
 | 4 | flower | thing |
 | 5 | fruit | thing |
 | 6 | root | thing |
+| 7 | medium (e.g. soil, rockwool) | stuff |
+| 8 | pot | stuff | 
 
 See [templates/schema_template.json](templates/schema_template.json) for a starting point.
 

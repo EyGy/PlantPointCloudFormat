@@ -35,26 +35,14 @@
 ### 1.1 Purpose
 
 The Plant Point Cloud Format (PPF) is a standardized format for representing individual plant point clouds, designed specifically for plant phenotyping, agricultural research, and machine learning applications.
-
-### 1.2 Why Standardization Matters
-
-Current challenges in plant point cloud research:
-
-| Challenge | Impact |
-|-----------|--------|
-| Inconsistent annotations | Cross-dataset training is difficult |
-| Data leakage | Temporal datasets leak between train/test |
-| Format fragmentation | Time wasted on format conversion |
-| Missing metadata | Critical context is lost |
-
-PPF addresses these by defining:
+To address current challenges in plant point cloud research PPF defines:
 
 - Consistent file structure based on PLY
-- Standardized semantic and instance labeling
+- Standardized semantic and instance labeling (incl. spatio-temporal and hierachical labels)
 - Clear conventions for temporal datasets
 - Flexible but structured metadata system
 
-### 1.3 Design Principles
+### 1.2 Design Principles
 
 1. **Simplicity**: Use existing, well-supported formats (PLY, JSON)
 2. **Self-containment**: Each PLY contains essential metadata
@@ -62,7 +50,7 @@ PPF addresses these by defining:
 4. **ML-readiness**: Designed for proper train/val/test splitting
 5. **Community-driven**: Open specification
 
-### 1.4 Scope
+### 1.3 Scope
 
 **In scope (v1.0)**:
 - Individual plant point clouds (one plant per file)
@@ -211,7 +199,7 @@ Include when information is available.
 | species | string | Scientific name (underscore-separated) | Arabidopsis_thaliana |
 | acquisition_date | string | ISO 8601 format | 2024-03-15 |
 | sensor_type | string | Acquisition modality | See vocabulary below |
-| dataset_name | string | Parent dataset identifier | Pheno4D |
+| dataset_name | string | Parent dataset identifier | BonnBeetClouds |
 
 **Sensor type vocabulary**:
 
@@ -219,7 +207,7 @@ Include when information is available.
 |-------|-------------|
 | lidar_terrestrial | Terrestrial laser scanning |
 | lidar_mobile | Mobile/handheld LiDAR |
-| sfm_rgb | Structure from Motion |
+| sfm | Structure from Motion |
 | structured_light | Structured light scanning |
 | tof | Time-of-flight camera |
 | rgb_d | RGB-D sensor |
@@ -340,7 +328,7 @@ Use these IDs for common classes to maximize interoperability:
 | 4 | flower | thing | [255, 255, 0] |
 | 5 | fruit | thing | [255, 0, 0] |
 | 6 | root | thing | [128, 64, 0] |
-| 7 | soil | stuff | [64, 32, 0] |
+| 7 | medium | stuff | [64, 32, 0] |
 | 8 | pot | stuff | [192, 192, 192] |
 
 Datasets with additional classes SHOULD use IDs >= 10.
