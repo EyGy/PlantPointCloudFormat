@@ -1,7 +1,6 @@
 # Plant Point Cloud Format (PPF)
 
 [![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md)
-[![License]ToDo ](LICENSE)
 
 **A standardized format for plant point clouds in phenotyping and agricultural applications.**
 
