@@ -46,6 +46,7 @@ The Plant Point Cloud Format (PPF) is a standardized format for representing ind
 - Dataset organization and metadata
 
 **Out of scope (v1.0)**:
+- Trees (forestry and orchard data)
 - Multi-plant scene representations
 - Mesh data
 - Multi-spectral data (noted for future extension)
@@ -181,7 +182,19 @@ Include when information is available.
 | species | string | Scientific name (underscore-separated) | Arabidopsis_thaliana |
 | acquisition_date | string | ISO 8601 format | 2024-03-15 |
 | sensor_type | string | Acquisition modality | See vocabulary below |
+| plant_category | string | Grouping to identify structurally similar plants | See vocabulary below |
 | dataset_name | string | Parent dataset identifier | BonnBeetClouds |
+
+Monocots (sorghum/maize/wheat), Dicots-rosette (strawberry, sugar beets) , Dicots-bushy/woody (pepper, soy, rose, etc.) 
+
+Indoor/Field/Box etc. 
+**Plant category vocabulary**:
+
+| Value | Description |
+|-------|-------------|
+| monocot | Monocotyl plants (sorghum/maize/wheat) |
+| dicot-rosette | Dicotyl plants with leafly structure close to the ground (strawberry, sugar beets) |
+| dicot-bushy | Dicotyl plants with a bushy/woody structure (pepper, soy, rose, etc.)  |
 
 **Sensor type vocabulary**:
 
