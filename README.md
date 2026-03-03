@@ -4,7 +4,7 @@
 
 **A standardized format for plant point clouds in phenotyping and agricultural applications.**
 
-See --> [![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md) for current PPF data format documentation.
+
 ---
 
 ## Overview
@@ -19,6 +19,7 @@ PPF defines a consistent, interoperable format for representing individual plant
 
 Built on the widely-supported PLY format with structured metadata conventions.
 
+See --> [![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md) for current PPF data format documentation.
 ---
 
 ## Quick Start
