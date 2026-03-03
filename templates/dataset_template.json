@@ -1,0 +1,42 @@
+{
+  "dataset_name": "[DATASET_NAME]",
+  "ppf_version": "1.0",
+  "description": "[Brief description of the dataset]",
+  "license": "[SPDX license identifier, e.g., CC-BY-4.0]",
+  "citation": "[Author et al. (Year). Paper title. Journal/Conference.]",
+  "url": "[https://doi.org/... or homepage URL]",
+  "created": "[YYYY-MM-DD]",
+  "coordinate_system": {
+    "unit": "mm",
+    "up_axis": "Z",
+    "origin": "median_centered"
+  },
+  "temporal_info": {
+    "is_temporal": false,
+    "n_subjects": null,
+    "timepoints": []
+  },
+  "statistics": {
+    "n_plants": 0,
+    "n_scans": 0,
+    "n_subjects": 0,
+    "n_timepoints_max": 1,
+    "species": [],
+    "sensor_types": []
+  },
+  "plants": [
+    {
+      "file": "plants/[filename].ply",
+      "plant_id": "[unique_scan_id]",
+      "subject_id": "[physical_plant_id]",
+      "timepoint_index": 0,
+      "species": "[Genus_species]",
+      "sensor_type": "[sensor_type]",
+      "acquisition_date": "[YYYY-MM-DD]",
+      "n_points": 0,
+      "has_labels": false,
+      "has_instances": false,
+      "has_hierarchy": false
+    }
+  ]
+}

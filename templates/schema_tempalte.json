@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "description": "[Dataset Name] label schema",
+  "labels": {
+    "0": {
+      "name": "unlabeled",
+      "type": "void",
+      "description": "Unlabeled or unknown points",
+      "color": [128, 128, 128],
+      "parent_class": null
+    },
+    "1": {
+      "name": "leaf",
+      "type": "thing",
+      "description": "Leaf blade tissue",
+      "color": [0, 255, 0],
+      "parent_class": null
+    },
+    "2": {
+      "name": "stem",
+      "type": "stuff",
+      "description": "Main stem and branches",
+      "color": [139, 69, 19],
+      "parent_class": null
+    },
+    "3": {
+      "name": "petiole",
+      "type": "stuff",
+      "description": "Leaf petiole connecting blade to stem",
+      "color": [0, 128, 0],
+      "parent_class": null
+    },
+    "4": {
+      "name": "flower",
+      "type": "thing",
+      "description": "Flower structures",
+      "color": [255, 255, 0],
+      "parent_class": null
+    },
+    "5": {
+      "name": "fruit",
+      "type": "thing",
+      "description": "Fruit structures",
+      "color": [255, 0, 0],
+      "parent_class": null
+    },
+    "6": {
+      "name": "root",
+      "type": "thing",
+      "description": "Root structures (if visible)",
+      "color": [128, 64, 0],
+      "parent_class": null
+    },
+    "7": {
+      "name": "soil",
+      "type": "stuff",
+      "description": "Soil or growing medium",
+      "color": [64, 32, 0],
+      "parent_class": null
+    },
+    "8": {
+      "name": "pot",
+      "type": "stuff",
+      "description": "Container or pot",
+      "color": [192, 192, 192],
+      "parent_class": null
+    }
+  }
+}

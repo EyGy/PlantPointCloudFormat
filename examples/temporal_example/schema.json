@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "description": "Label schema for temporal tomato dataset",
+  "labels": {
+    "0": {
+      "name": "unlabeled",
+      "type": "void",
+      "description": "Unlabeled points",
+      "color": [128, 128, 128]
+    },
+    "1": {
+      "name": "leaf",
+      "type": "thing",
+      "description": "Leaf blade",
+      "color": [0, 255, 0]
+    },
+    "2": {
+      "name": "stem",
+      "type": "stuff",
+      "description": "Main stem and branches",
+      "color": [139, 69, 19]
+    },
+    "3": {
+      "name": "petiole",
+      "type": "stuff",
+      "description": "Leaf petiole",
+      "color": [0, 128, 0]
+    }
+  }
+}

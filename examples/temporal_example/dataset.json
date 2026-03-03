@@ -1,0 +1,120 @@
+{
+  "dataset_name": "Temporal_Example",
+  "ppf_version": "1.0",
+  "description": "Example temporal dataset demonstrating time-series plant tracking",
+  "license": "CC-BY-4.0",
+  "citation": null,
+  "url": null,
+  "created": "2024-03-15",
+  "coordinate_system": {
+    "unit": "mm",
+    "up_axis": "Z",
+    "origin": "median_centered"
+  },
+  "temporal_info": {
+    "is_temporal": true,
+    "n_subjects": 2,
+    "timepoints": [
+      {
+        "index": 0,
+        "description": "DAE 7 - Early vegetative"
+      },
+      {
+        "index": 1,
+        "description": "DAE 14 - Mid vegetative"
+      },
+      {
+        "index": 2,
+        "description": "DAE 21 - Late vegetative"
+      }
+    ]
+  },
+  "statistics": {
+    "n_plants": 6,
+    "n_scans": 6,
+    "n_subjects": 2,
+    "n_timepoints_max": 3,
+    "species": ["Solanum_lycopersicum"],
+    "sensor_types": ["lidar_terrestrial"]
+  },
+  "plants": [
+    {
+      "file": "plants/tomato_001_t0.ply",
+      "plant_id": "tomato_001_t0",
+      "subject_id": "tomato_001",
+      "timepoint_index": 0,
+      "species": "Solanum_lycopersicum",
+      "sensor_type": "lidar_terrestrial",
+      "acquisition_date": "2024-03-01",
+      "n_points": 45230,
+      "has_labels": true,
+      "has_instances": true,
+      "has_hierarchy": false
+    },
+    {
+      "file": "plants/tomato_001_t1.ply",
+      "plant_id": "tomato_001_t1",
+      "subject_id": "tomato_001",
+      "timepoint_index": 1,
+      "species": "Solanum_lycopersicum",
+      "sensor_type": "lidar_terrestrial",
+      "acquisition_date": "2024-03-08",
+      "n_points": 78542,
+      "has_labels": true,
+      "has_instances": true,
+      "has_hierarchy": false
+    },
+    {
+      "file": "plants/tomato_001_t2.ply",
+      "plant_id": "tomato_001_t2",
+      "subject_id": "tomato_001",
+      "timepoint_index": 2,
+      "species": "Solanum_lycopersicum",
+      "sensor_type": "lidar_terrestrial",
+      "acquisition_date": "2024-03-15",
+      "n_points": 124891,
+      "has_labels": true,
+      "has_instances": true,
+      "has_hierarchy": false
+    },
+    {
+      "file": "plants/tomato_002_t0.ply",
+      "plant_id": "tomato_002_t0",
+      "subject_id": "tomato_002",
+      "timepoint_index": 0,
+      "species": "Solanum_lycopersicum",
+      "sensor_type": "lidar_terrestrial",
+      "acquisition_date": "2024-03-01",
+      "n_points": 42100,
+      "has_labels": true,
+      "has_instances": true,
+      "has_hierarchy": false
+    },
+    {
+      "file": "plants/tomato_002_t1.ply",
+      "plant_id": "tomato_002_t1",
+      "subject_id": "tomato_002",
+      "timepoint_index": 1,
+      "species": "Solanum_lycopersicum",
+      "sensor_type": "lidar_terrestrial",
+      "acquisition_date": "2024-03-08",
+      "n_points": 71234,
+      "has_labels": true,
+      "has_instances": true,
+      "has_hierarchy": false
+    },
+    {
+      "file": "plants/tomato_002_t2.ply",
+      "plant_id": "tomato_002_t2",
+      "subject_id": "tomato_002",
+      "timepoint_index": 2,
+      "species": "Solanum_lycopersicum",
+      "sensor_type": "lidar_terrestrial",
+      "acquisition_date": "2024-03-15",
+      "n_points": 118562,
+      "has_labels": true,
+      "has_instances": true,
+      "has_hierarchy": false
+    }
+  ]
+}

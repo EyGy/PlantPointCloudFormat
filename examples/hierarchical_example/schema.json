@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "description": "Hierarchical label schema for compound leaf plants",
+  "labels": {
+    "0": {
+      "name": "unlabeled",
+      "type": "void",
+      "description": "Unlabeled points",
+      "color": [128, 128, 128],
+      "parent_class": null,
+      "hierarchy_level": null
+    },
+    "1": {
+      "name": "leaflet",
+      "type": "thing",
+      "description": "Individual leaflet of compound leaf",
+      "color": [144, 238, 144],
+      "parent_class": 2,
+      "hierarchy_level": 0
+    },
+    "2": {
+      "name": "leaf",
+      "type": "thing",
+      "description": "Complete leaf (compound or simple)",
+      "color": [0, 255, 0],
+      "parent_class": 4,
+      "hierarchy_level": 1
+    },
+    "3": {
+      "name": "petiole",
+      "type": "stuff",
+      "description": "Leaf petiole",
+      "color": [0, 128, 0],
+      "parent_class": 4,
+      "hierarchy_level": 1
+    },
+    "4": {
+      "name": "branch",
+      "type": "thing",
+      "description": "Branch structure",
+      "color": [139, 90, 43],
+      "parent_class": 5,
+      "hierarchy_level": 2
+    },
+    "5": {
+      "name": "main_stem",
+      "type": "stuff",
+      "description": "Main stem (top-level)",
+      "color": [139, 69, 19],
+      "parent_class": null,
+      "hierarchy_level": 3
+    }
+  }
+}

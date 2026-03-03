@@ -1,0 +1,19 @@
+ply
+format ascii 1.0
+comment ppf_version 1.0
+comment plant_id minimal_example_001
+element vertex 10
+property float x
+property float y
+property float z
+end_header
+-5.0 2.1 0.0
+-4.2 1.8 3.5
+-3.1 2.5 7.2
+-1.8 1.2 11.0
+-0.5 2.8 15.3
+0.8 1.5 19.8
+2.1 2.2 24.1
+3.5 1.0 28.5
+4.2 2.6 32.0
+5.0 1.8 35.5

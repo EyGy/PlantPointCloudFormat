@@ -1,0 +1,40 @@
+ply
+format ascii 1.0
+comment ppf_version 1.0
+comment plant_id tomato_007_t1
+comment subject_id tomato_007
+comment timepoint_index 1
+comment species Solanum_lycopersicum
+comment sensor_type structured_light
+comment dataset_name Hierarchical_Example
+element vertex 20
+property float x
+property float y
+property float z
+property uchar red
+property uchar green
+property uchar blue
+property int semantic_label
+property int instance_id
+property int organ_id
+end_header
+0.0 0.0 0.0 139 69 19 5 0 0
+0.0 0.0 10.0 139 69 19 5 0 0
+0.0 0.0 20.0 139 69 19 5 0 0
+5.0 0.0 25.0 139 90 43 4 1 0
+10.0 0.0 28.0 139 90 43 4 1 0
+12.0 2.0 30.0 0 128 0 3 0 1
+15.0 5.0 32.0 0 255 0 2 100 1
+18.0 8.0 35.0 144 238 144 1 1 100
+22.0 10.0 36.0 144 238 144 1 1 100
+25.0 12.0 37.0 144 238 144 1 1 100
+18.0 3.0 34.0 144 238 144 1 2 100
+21.0 1.0 35.5 144 238 144 1 2 100
+24.0 -1.0 36.5 144 238 144 1 2 100
+18.0 7.0 33.0 144 238 144 1 3 100
+20.0 10.0 34.0 144 238 144 1 3 100
+22.0 13.0 35.0 144 238 144 1 3 100
+-5.0 0.0 22.0 139 90 43 4 2 0
+-10.0 0.0 24.0 139 90 43 4 2 0
+-12.0 3.0 26.0 0 255 0 2 101 2
+-15.0 6.0 28.0 0 255 0 2 101 2
