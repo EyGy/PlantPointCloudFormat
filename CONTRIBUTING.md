@@ -16,19 +16,6 @@ Thank you for your interest in contributing to the Plant Point Cloud Format!
 - Describe the use case and proposed solution
 - Be specific about what problem it solves
 
-### Improve Documentation
-
-- Fix typos, clarify explanations
-- Add examples for your use case
-- Translate to other languages
-
-### Code Contributions
-
-- Fork the repository
-- Create a feature branch
-- Submit a Pull Request
-- Include tests for new functionality
-
 ### Dataset Conversion
 
 - Convert existing datasets to PPF
@@ -44,38 +31,6 @@ For changes to the specification itself:
 3. **Draft** proposed specification text
 4. **Submit PR** with changes to SPECIFICATION.md
 5. **Update** reference implementation if needed
-
-### Change Categories
-
-| Category | Process |
-|----------|---------|
-| Typo/clarification | Direct PR |
-| New optional field | Issue then Discussion then PR |
-| New required field | Issue then RFC then Community vote then PR |
-| Breaking change | Major version, extensive discussion |
-
-## Code Style
-
-### Python
-
-- Follow PEP 8
-- Use type hints
-- Include docstrings
-- Add unit tests
-
-### Documentation
-
-- Use clear, simple language
-- Include examples
-- Keep tables aligned
-- Test all code snippets
-
-## Review Process
-
-1. All PRs require at least one review
-2. CI must pass
-3. Documentation must be updated
-4. Changelog entry required for features
 
 ## Code of Conduct
 

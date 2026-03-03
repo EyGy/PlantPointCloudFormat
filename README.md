@@ -5,13 +5,14 @@
 
 **A standardized format for plant point clouds in phenotyping and agricultural applications.**
 
+See --> [SPECIFICATION.md] for PPF data format documentation.
 ---
 
 ## Overview
 
 PPF defines a consistent, interoperable format for representing individual plant point clouds with:
 
-- **Unified and structured format individual plant scans**
+- **Unified and structured format for individual 3D plant scans**
 - **Semantic and instance segmentation labels**
 - **Spatio-Temporal (time-series) dataset support**
 - **Hierarchical organ relationships**
@@ -26,7 +27,7 @@ Built on the widely-supported PLY format with structured metadata conventions.
 ### Installation / Requirements
 
 ```bash
-pip install numpy plyfile
+pip install !!TODO!!
 ```
 
 ### Reading a PPF File
@@ -76,34 +77,22 @@ All PPF point clouds use:
 - **Up axis**: Z-positive
 - **Origin**: Median-centered (median of X, Y, Z coordinates)
 
-### Semantic and Instance Labels
+### Semantic and Instance Labels (follows panoptic labeling schema)
 
 ```
 semantic_label=1 (leaf), instance_id=5  ->  "Leaf instance #5"
-semantic_label=2 (stem), instance_id=0  ->  "Stem (stuff class)"
+semantic_label=8 (pot), instance_id=0  ->  "Pot (stuff class)"
 ```
 
 ### Temporal Dataset Support
 
-Track plants across time with subject_id to prevent data leakage:
+Track plants across time with subject_id (e.g to prevent data leakage for ML-tasks)-
 
-```python
-
-# Correct: split by physical plant
-
-train_subjects, test_subjects = train_test_split(all_subject_ids)
-
-# All timepoints of a plant stay together
-
-```
 
 ### Hierarchical Labels (Optional)
 
 Model organ relationships like leaflet -> leaf -> branch:
-
-```
-organ_id links instances to their parent structures
-```
+Use organ_id to link instances to their parent structures
 
 ---
 
@@ -151,6 +140,7 @@ For interoperability, use these IDs for common classes:
 | 7 | medium (e.g. soil, rockwool) | stuff |
 | 8 | pot | stuff | 
 
+Use IDs from 10-254 for custom classes.
 See [templates/schema_template.json](templates/schema_template.json) for a starting point.
 
 ---
@@ -174,11 +164,11 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 If you use PPF in your research, please cite:
 
 ```bibtex
-@misc{ppf2024,
-  title={Plant Point Cloud Format (PPF): A Standardized Format for Plant Phenotyping},
+@misc{ppf2026,
+  title={TODO: PlantBench & PlantPointCloudFormat (PPF): Benchmark & Dataset Paper},
   author={[Authors]},
-  year={2024},
-  url={https://github.com/[username]/ppf-specification}
+  year={2026},
+  url={https://github.com/EyGy/PlantPointCloudFormat}
 }
 ```
 
@@ -186,20 +176,19 @@ If you use PPF in your research, please cite:
 
 ## License
 
-This specification is released under [CC-BY-4.0](LICENSE).
-
-The reference implementation is released under [MIT License](reference/LICENSE).
+TODO
 
 ---
 
 ## Acknowledgments
 
 [TODO: Acknowledge contributors, funding, related projects]
+Add all Authors of contributing datasets
 
 ---
 
 ## Contact
 
-- **Issues**: [GitHub Issues](https://github.com/[username]/ppf-specification/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/[username]/ppf-specification/discussions)
-- **Email**: [TODO]
+- **Issues**: [GitHub Issues](https://github.com/EyGy/PlantPointCloudFormat/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/EyGy/PlantPointCloudFormat/discussions)
+
