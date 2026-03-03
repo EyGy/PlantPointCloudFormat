@@ -11,7 +11,7 @@
 
 PPF defines a consistent, interoperable format for representing individual plant point clouds with:
 
-- **Unified and structured format for all kinds of single plant scans**
+- **Unified and structured format individual plant scans**
 - **Semantic and instance segmentation labels**
 - **Spatio-Temporal (time-series) dataset support**
 - **Hierarchical organ relationships**
