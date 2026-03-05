@@ -34,9 +34,9 @@
 
 ### 1.1 Purpose
 
-The Plant Point Cloud Format (PPF) is a standardized format for representing individual plant point clouds, designed specifically for plant phenotyping, agricultural research, and machine learning applications.
+The Plant Point Cloud Format (PPF) is a standardized format for representing individual plant point clouds, designed specifically for plant phenotyping, agricultural research, and machine learning applications. Its purpose is to address current challenges in plant point cloud research like inconsistent annotations, missing metadata and time wasted on format conversion. PPF defines a consistent file structure based on PLY with standardized labels formats and flexible but structured metadata convetions. PPF is a free and strictly non-commercial community project created by & for plant point cloud researchers with the goal of making all our lifes easier by aggreing on a common standard. Feel invited to suggest improvements or to contribute (see link2contribution.md).
 
-### 1.2 Scope
+#### Scope
 
 **In scope (v1.0)**:
 - Individual plant point clouds (one plant per file)
@@ -46,10 +46,10 @@ The Plant Point Cloud Format (PPF) is a standardized format for representing ind
 - Dataset organization and metadata
 
 **Out of scope (v1.0)**:
-- Trees (forestry and orchard data)
+- Trees, forestry and orchard data (planned for future extension)
+- Multi-spectral data (planned for future extension)
 - Multi-plant scene representations
-- Mesh data
-- Multi-spectral data (noted for future extension)
+- Mesh data or other 3D formats
 - Raw sensor data formats
 
 ---
@@ -59,10 +59,10 @@ The Plant Point Cloud Format (PPF) is a standardized format for representing ind
 ### 2.1 Base Format: PLY
 
 PPF uses the **Polygon File Format (PLY)** as its base.
-PLY files are supported by Open3D, trimesh, plyfile, CloudCompare, MeshLab, and many more.
+PLY files are supported by Open3D, trimesh, plyfile, CloudCompare, MeshLab, and many more. PLY was chosen since its widely-spread in the community already and offers the required flexibility.
 
 
-### 2.2 Encoding
+### 2.2 Potential PPF file encodings
 
 | Context | Encoding | Rationale |
 |---------|----------|-----------|
@@ -79,7 +79,7 @@ PLY files are supported by Open3D, trimesh, plyfile, CloudCompare, MeshLab, and 
 
 | Property | Convention | Notes |
 |----------|------------|-------|
-| **Unit** | Millimeters (mm) | All XYZ coordinates |
+| **Unit** | Millimeters (mm) | All XYZ coordinates are scaled in metrical millimeters |
 | **Up axis** | Z-positive | Z increases upward |
 | **Origin** | Median-centered | Origin at median(X), median(Y), median(Z) |
 
@@ -309,7 +309,8 @@ Labels 1-254 available for dataset-specific classes.
 
 ### 4.5 Recommended Base Schema
 
-Use these IDs for common classes to maximize interoperability:
+Use the following IDs for common classes to maximize interoperability. Color values are optional suggestions are for visualization purposes. The IDs can be arbitrarilty extended with new custom classes as needed 
+(e.g.: "class" leaflet with ID=11 or class "closed_bud" with ID=24). Avoid double ususage of already listed IDs for another class (even if the listed class is not present in your dataset).
 
 | ID | Name | Type | Color RGB |
 |----|------|------|-----------|
@@ -322,8 +323,6 @@ Use these IDs for common classes to maximize interoperability:
 | 6 | root | thing | [128, 64, 0] |
 | 7 | medium | stuff | [64, 32, 0] |
 | 8 | pot | stuff | [192, 192, 192] |
-
-Datasets with additional classes SHOULD use IDs >= 10.
 
 ---
 
