@@ -34,7 +34,7 @@
 
 ### 1.1 Purpose
 
-The Plant Point Cloud Format (PPF) is a standardized format for representing individual plant point clouds, designed specifically for plant phenotyping, agricultural research, and machine learning applications. Its purpose is to address current challenges in plant point cloud research like inconsistent annotations, missing metadata and time wasted on format conversion. PPF defines a consistent file structure based on PLY with standardized labels formats and flexible but structured metadata convetions. PPF is a free and strictly non-commercial community project created by & for plant point cloud researchers with the goal of making all our lifes easier by aggreing on a common standard. Feel invited to suggest improvements or to contribute (see link2contribution.md).
+The Plant Point Cloud Format (PPF) is a standardized format for representing individual plant point clouds, designed specifically for plant phenotyping, agricultural research, and machine learning applications. Its purpose is to address current challenges in plant point cloud research like inconsistent annotations, missing metadata and time wasted on format conversion. PPF defines a consistent file structure based on PLY with standardized labels formats and flexible but structured metadata convetions. PPF is a free and strictly non-commercial community project created by & for plant point cloud researchers with the goal of making all our lifes easier by aggreing on a common standard. Feel invited to suggest improvements or to contribute directly (see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines).
 
 #### Scope
 
