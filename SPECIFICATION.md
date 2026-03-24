@@ -1,10 +1,10 @@
 # Plant Point Cloud Format (PPF) Specification
 
-**Version 1.0 — Draft 0.1**
+**Version 1.0 — Draft 0.2**
 
 **Status**: Draft — Open for community feedback
 
-**Last Updated**: 2026-03-03 (YYYY-MM-DD)
+**Last Updated**: 2026-03-24 (YYYY-MM-DD)
 
 ---
 
@@ -149,7 +149,7 @@ Required when specific conditions apply.
 
 | Property | Data Type | Description |
 |----------|-----------|-------------|
-| semantic_label | int | Semantic class ID (see Section 4) |
+| semantic_id | int | Semantic class ID (see Section 4) |
 | instance_id | int | Instance ID within semantic class |
 
 **Instance ID conventions**:
@@ -181,6 +181,8 @@ Include when information is available.
 |-----|------|-------------|---------|
 | species | string | Scientific name (underscore-separated) | Arabidopsis_thaliana |
 | acquisition_date | string | ISO 8601 format | 2024-03-15 |
+| acquisition_time | string | ISO 8601 format | 13:46:05Z |
+acquisition_time 13:46:05Z
 | sensor_type | string | Acquisition modality | See vocabulary below |
 | plant_category | string | Grouping to identify structurally similar plants | See vocabulary below |
 | dataset_name | string | Parent dataset identifier | BonnBeetClouds |
@@ -230,6 +232,7 @@ Include when information is available.
 | treatment | string | Experimental treatment | drought_stress |
 | processing_level | string | Processing stage | raw, cleaned |
 | source_file | string | Original filename | scan_001.las |
+| other | Other/unspecified | |
 
 #### 3.4.2 Vertex Properties
 
@@ -752,23 +755,27 @@ end_header
 ply
 format ascii 1.0
 comment ppf_version 1.0
-comment plant_id arabidopsis_042_t2
-comment subject_id arabidopsis_042
+comment plant_id ppf_example_begonia_maculata_001_t2
+comment subject_id begonia_maculata_01
 comment timepoint_index 2
-comment species Arabidopsis_thaliana
-comment sensor_type structured_light
-comment acquisition_date 2024-03-15
-comment dataset_name Example_Dataset
-element vertex 6
+comment species Begonia_maculata
+comment acquisition_date 2025-01-22  ISO 8601 format
+comment acquisition_time 13:46:05Z
+comment sensor_type sfm
+comment dataset_name PPF_Example_Dataset
+comment processing_level cleaned
+element vertex 15
 property float x
 property float y
 property float z
 property uchar red
 property uchar green
 property uchar blue
-property int semantic_label
+property int semantic_id
 property int instance_id
+property int organ_id
 end_header
+
 0.0 0.0 0.0 139 69 19 2 0
 0.0 0.0 5.0 139 69 19 2 0
 2.0 1.0 8.0 0 255 0 1 1
