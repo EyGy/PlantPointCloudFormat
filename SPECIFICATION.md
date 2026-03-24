@@ -312,21 +312,20 @@ Labels 1-254 available for dataset-specific classes.
 
 ### 4.5 Recommended Base Schema
 
-Use the following IDs for common classes to maximize interoperability. Color values are optional suggestions are for visualization purposes. The IDs can be arbitrarilty extended with new custom classes as needed 
+Use the following IDs for common classes to maximize interoperability. The IDs can be arbitrarilty extended with new custom classes as needed 
 (e.g.: "class" leaflet with ID=11 or class "closed_bud" with ID=24). Avoid double ususage of already listed IDs for another class (even if the listed class is not present in your dataset).
 
-| ID | Name | Type | Color RGB |
-|----|------|------|-----------|
-| 0 | unlabeled | void | [128, 128, 128] |
-| 1 | leaf | thing | [0, 255, 0] |
-| 2 | stem | thing | [139, 69, 19] |
-| 3 | petiole | thing | [0, 128, 0] |
-| 4 | flower | thing | [255, 255, 0] |
-| 5 | fruit | thing | [255, 0, 0] |
-| 6 | root | thing | [128, 64, 0] |
-| 7 | medium | stuff | [64, 32, 0] |
-| 8 | pot | stuff | [192, 192, 192] |
-
+| ID | Name | Type |
+|----|------|------|
+| 0 | unlabeled | void |
+| 1 | leaf | thing |
+| 2 | stem | thing |
+| 3 | petiole | thing |
+| 4 | flower | thing |
+| 5 | fruit | thing |
+| 6 | root | thing |
+| 7 | medium (soil, coco, etc.)| stuff |
+| 8 | pot | stuff |
 ---
 
 ## 5. Hierarchical Instance Labeling (optional extension)
