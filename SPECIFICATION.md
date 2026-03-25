@@ -41,6 +41,8 @@ The Plant Point Cloud Format (PPF) is a standardized format for representing ind
 **In scope (v1.0)**:
 - Individual plant point clouds (one plant per file)
 - Semantic and instance segmentation labels
+
+**Planned extensions**:
 - Hierarchical organ relationships
 - Spatio-temporal (time-series) datasets
 - Dataset organization and metadata
@@ -159,7 +161,8 @@ Required when specific conditions apply.
 | 0 | Unlabeled or "stuff" class (no instances) |
 | 1, 2, 3, ... | Distinct instance IDs |
 
-**Important**: Instance IDs are unique **within each semantic class**, not globally.
+**Important**: Instance IDs are unique **within each semantic class**, not globally. An instance_id = 0 indicates that this element has no instance label (valid instance labels start from 1).
+When annotating plants we recommend counting the instances from bottom-top. Thus, the lowest leaf (closest to emergence point) gets instance_id = 1 and the most upper leaf gets instance_id = max (we know that this may be very difficult for dense plants - in that case try to follow this rule to the best of your ability).
 
 #### 3.2.2 Temporal Dataset Fields
 
@@ -260,14 +263,12 @@ Each dataset MUST include a schema.json file.
     "0": {
       "name": "unlabeled",
       "type": "void",
-      "description": "Unlabeled or unknown points",
-      "color": [128, 128, 128]
+      "description": "Unlabeled or unknown points"
     },
     "1": {
       "name": "leaf",
       "type": "thing",
-      "description": "Leaf blade tissue",
-      "color": [0, 255, 0]
+      "description": "Leaf blade tissue"
     }
   }
 }
@@ -280,8 +281,8 @@ Each dataset MUST include a schema.json file.
 | Field | Required | Type | Description |
 |-------|----------|------|-------------|
 | schema_version | Yes | string | Schema format version |
-| description | No | string | Human-readable description |
 | labels | Yes | object | Label definitions keyed by ID |
+| description | No | string | Human-readable description |
 
 #### Label Object Fields
 
@@ -290,7 +291,6 @@ Each dataset MUST include a schema.json file.
 | name | Yes | string | Short identifier (snake_case) |
 | type | Yes | string | void, thing, or stuff |
 | description | No | string | Human-readable description |
-| color | Yes | array | RGB values [R, G, B] |
 | parent_class | No | integer | Parent class for hierarchy |
 
 ### 4.3 Label Types
@@ -301,16 +301,7 @@ Each dataset MUST include a schema.json file.
 | stuff | No | Amorphous regions | soil, background |
 | thing | Yes | Countable objects | leaf, flower, fruit |
 
-### 4.4 Reserved Label IDs
-
-| ID | Reserved For |
-|----|--------------|
-| 0 | unlabeled / void |
-| 255 | Future use |
-
-Labels 1-254 available for dataset-specific classes.
-
-### 4.5 Recommended Base Schema
+### 4.4 Recommended Base Schema
 
 Use the following IDs for common classes to maximize interoperability. The IDs can be arbitrarilty extended with new custom classes as needed 
 (e.g.: "class" leaflet with ID=11 or class "closed_bud" with ID=24). Avoid double ususage of already listed IDs for another class (even if the listed class is not present in your dataset).
@@ -375,37 +366,32 @@ Define parent-child relationships in schema.json:
   "labels": {
     "0": {
       "name": "unlabeled",
-      "type": "void",
-      "color": [128, 128, 128],
+      "type": "void"
       "parent_class": null
     },
     "1": {
-      "name": "leaflet",
-      "type": "thing",
-      "color": [144, 238, 144],
-      "parent_class": 2,
-      "hierarchy_level": 0
+      "name": "leaf",
+      "type": "thing"
+      "parent_class": 3,
+      "hierarchy_level": 3
     },
     "2": {
-      "name": "leaf",
-      "type": "thing",
-      "color": [0, 255, 0],
-      "parent_class": 3,
+      "name": "stem",
+      "type": "stuff"
+      "parent_class": null,
       "hierarchy_level": 1
     },
     "3": {
-      "name": "branch",
-      "type": "thing",
-      "color": [139, 90, 43],
-      "parent_class": 4,
+      "name": "petiole",
+      "type": "thing"
+      "parent_class": 2,
       "hierarchy_level": 2
     },
-    "4": {
-      "name": "main_stem",
-      "type": "stuff",
-      "color": [139, 69, 19],
-      "parent_class": null,
-      "hierarchy_level": 3
+    "12": {
+      "name": "leaflet",
+      "type": "thing"
+      "parent_class": 1,
+      "hierarchy_level": 4
     }
   }
 }
