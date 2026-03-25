@@ -161,8 +161,8 @@ Required when specific conditions apply.
 | 0 | Unlabeled or "stuff" class (no instances) |
 | 1, 2, 3, ... | Distinct instance IDs |
 
-**Important**: Instance IDs are unique **within each semantic class**, not globally. An instance_id = 0 indicates that this element has no instance label (valid instance labels start from 1).
-When annotating plants we recommend counting the instances from bottom-top. Thus, the lowest leaf (closest to emergence point) gets instance_id = 1 and the most upper leaf gets instance_id = max (we know that this may be very difficult for dense plants - in that case try to follow this rule to the best of your ability).
+**Important**: Instance IDs are unique **within each semantic class**, not globally. An instance_id = 0 indicates that this element has no instance label (valid instance labels start counting with 1).
+When annotating plants we recommend counting the instances bottom-top. Thus, the lowest leaf (closest to emergence point) gets instance_id = 1 and the most upper leaf gets instance_id = max (This may be very difficult for dense plants - in that case try to follow this recommendation to the best of your ability).
 
 #### 3.2.2 Temporal Dataset Fields
 
