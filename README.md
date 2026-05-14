@@ -2,24 +2,18 @@
 
 [![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md)
 
-**A standardized format for plant point clouds in phenotyping and agricultural applications.**
+**A standardized format for 3D plant point clouds in phenotyping and agricultural applications.**
 
 
 ---
 
 ## Overview
 
-PPF defines a consistent, interoperable format for representing individual plant point clouds with:
+PPF defines a consistent, interoperable format for representing individual plant point clouds with a unified format with semantic- and instance segmentation labels
 
-- **Unified and structured format for individual 3D plant scans**
-- **Semantic and instance segmentation labels**
-- **Spatio-Temporal (time-series) dataset support**
-- **Hierarchical organ relationships**
-- **Rich metadata** for reproducible research
+PPF is built on the widely-supported PLY format with structured metadata conventions and compatible with all .ply viewers.
 
-Built on the widely-supported PLY format with structured metadata conventions.
-
-See --> [![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md) for current PPF data format documentation.
+See full format specification --> [![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md)
 ---
 
 ## Quick Start
@@ -33,26 +27,13 @@ pip install !!TODO!!
 ### Reading a PPF File
 
 ```python
-from reference.ppf_io import read_ppf
-
-cloud = read_ppf("plant_001.ply")
-print(f"Plant: {cloud.plant_id}")
-print(f"Points: {cloud.n_points}")
-print(f"Has labels: {cloud.has_labels}")
+TODO
 ```
 
 ### Loading a Dataset
 
 ```python
-from reference.ppf_dataset import PPFDataset
-
-dataset = PPFDataset.load("path/to/dataset")
-train_subjects = dataset.get_split("train")
-train_plants = dataset.get_plants_for_subjects(train_subjects)
-
-for plant_entry in train_plants:
-    cloud = dataset.load_plant(plant_entry)
-    # Process cloud...
+TODO
 ```
 
 ---
@@ -64,10 +45,10 @@ for plant_entry in train_plants:
 | [SPECIFICATION.md](SPECIFICATION.md) | Complete format specification |
 | [examples/](examples/) | Example files and datasets |
 | [reference/](reference/) | Python reference implementation |
-| [templates/](templates/) | Templates for creating new datasets |
+
+
 
 ---
-
 ## Key Features
 
 ### Standardized Coordinate System
@@ -77,71 +58,29 @@ All PPF point clouds use:
 - **Up axis**: Z-positive
 - **Origin**: Median-centered (median of X, Y, Z coordinates)
 
-### Semantic and Instance Labels (follows panoptic labeling schema)
+### Semantic and Instance Labels follow panoptic labeling schema
 
 ```
 semantic_label=1 (leaf), instance_id=5  ->  "Leaf instance #5"
 semantic_label=8 (pot), instance_id=0  ->  "Pot (stuff class)"
 ```
 
-### Temporal Dataset Support
-
-Track plants across time with subject_id (e.g to prevent data leakage for ML-tasks)-
-
-
-### Hierarchical Labels (Optional)
-
-Model organ relationships like leaflet -> leaf -> branch:
-Use organ_id to link instances to their parent structures
+## FAQs
+| Document | Description |
+|----------|-------------|
+| What is this the reason behind and the purpose of PPF? | PPF was created to establish a simple unified data format for AI/ML based plant organ segmentation. Basically we got tired of spending days on dataset conversion for data loaders and want to create a benchmark dataset that works for everyone.
+| Why not just use PLY as-is? |	PLY has no conventions for semantic labels, instance IDs, or plant metadata. PPF adds structure without breaking compatibility.|
+| Why not HDF5? |	HDF5 is powerful but has no ecosystem overlap with point cloud tools (CloudCompare, Open3D). PPF files open in any PLY viewer.
+| Why Median-Centered origin instead e.g. using the plant emergence point? | Median-centered origin is robust to outliers and computable without labels. Being able to position unlabeled data the same way as labeled data is crucial for downstream applications of any AI/ML application.
 
 ---
+## Planned Extensions
 
-## File Format Summary
+- **Creation of Benchmark Dataset** for semantic and instance segmentation based on openly available datasets
+- **Spatio-Temporal (time-series) dataset support**
+- **Hierarchical organ relationships**
 
-### Minimal PLY Header
-
-```ply
-ply
-format binary_little_endian 1.0
-comment ppf_version 1.0
-comment plant_id example_001
-element vertex 50000
-property float x
-property float y
-property float z
-end_header
-```
-
-### Dataset Structure
-
-```
-dataset/
-├── dataset.json      # Index and metadata
-├── schema.json       # Label definitions
-├── plants/           # PLY files
-└── splits/           # train.txt, val.txt, test.txt
-```
-
----
-
-## Recommended Label IDs
-
-For interoperability, use these IDs for common classes:
-
-| ID | Name | Type |
-|----|------|------|
-| 0 | unlabeled | void |
-| 1 | leaf | thing |
-| 2 | stem | thing |
-| 3 | petiole | thing |
-| 4 | flower | thing |
-| 5 | fruit | thing |
-| 6 | root | thing |
-| 7 | medium (e.g. soil, rockwool) | stuff |
-| 8 | pot | stuff | 
-
-Use IDs from 10-254 for custom classes.
-See [templates/schema_template.json](templates/schema_template.json) for a starting point.
+In the future we will also consider extending this format to support tree and forestry data.
 
 ---
 
@@ -153,11 +92,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 - Report issues or suggest improvements
 - Improve documentation
-- Extend the reference implementation
-- Convert existing datasets to PPF
-- Share your use cases
-
----
+- Convert existing datasets to PPF to contribute to the creation of a plant point cloud segmentation benchmark
 
 ## Citation
 
@@ -165,9 +100,9 @@ If you use PPF in your research, please cite:
 
 ```bibtex
 @misc{ppf2026,
-  title={TODO: PlantBench & PlantPointCloudFormat (PPF): Benchmark & Dataset Paper},
-  author={[Authors]},
-  year={2026},
+  title={TODO: ADD PAPER HERE},
+  author={[]},
+  year={},
   url={https://github.com/EyGy/PlantPointCloudFormat}
 }
 ```
@@ -175,8 +110,9 @@ If you use PPF in your research, please cite:
 ---
 
 ## License
+This work is part of a doctoral research project funded by Fraunhofer Institute for Integrated Circuits (IIS). It is currently in a pre-release version and the licensing discussion has not been finalized. Contact the author for any questions before the first official release. --> andreas.gilson@iis.fraunhofer.de
 
-TODO
+License TODO
 
 ---
 
