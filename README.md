@@ -107,19 +107,13 @@ If you use PPF in your research, please cite:
 }
 ```
 
----
-
-## License
-This work is part of a doctoral research project funded by Fraunhofer Institute for Integrated Circuits (IIS). It is currently in a pre-release version and the licensing discussion has not been finalized. Contact the author for any questions before the first official release. --> andreas.gilson@iis.fraunhofer.de
-
-License TODO
-
----
 
 ## Acknowledgments
 
-[TODO: Acknowledge contributors, funding, related projects]
-Add all Authors of contributing datasets
+This work is part of a doctoral research project funded by Fraunhofer Institute for Integrated Circuits (IIS) and the University of Bamberg. It is currently in a pre-release version and not finalized. 
+
+Please contact the author for any questions before the first official release. --> andreas.gilson@iis.fraunhofer.de
+
 
 ---
 
