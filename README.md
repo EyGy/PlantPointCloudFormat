@@ -9,7 +9,7 @@
 
 ## Overview
 
-PPF defines a consistent, interoperable format for representing individual plant point clouds with a unified format with semantic- and instance segmentation labels
+PPF defines a consistent, interoperable way of representing individual plant point clouds with semantic and instance segmentation labels in a unified format.
 
 PPF is built on the widely-supported PLY format with structured metadata conventions and compatible with all .ply viewers.
 
@@ -58,7 +58,7 @@ All PPF point clouds use:
 - **Up axis**: Z-positive
 - **Origin**: Median-centered (median of X, Y, Z coordinates)
 
-### Semantic and Instance Labels follow panoptic labeling schema
+### Semantic and Instance Labels follow panoptic labeling scheme
 
 ```
 semantic_label=1 (leaf), instance_id=5  ->  "Leaf instance #5"
@@ -68,7 +68,7 @@ semantic_label=8 (pot), instance_id=0  ->  "Pot (stuff class)"
 ## FAQs
 | Document | Description |
 |----------|-------------|
-| What is this the reason behind and the purpose of PPF? | PPF was created to establish a simple unified data format for AI/ML based plant organ segmentation. Basically we got tired of spending days on dataset conversion for data loaders and want to create a benchmark dataset that works for everyone.
+| What is the reason behind PPF? | PPF was created to establish a simple unified data format for AI/ML based plant organ segmentation. Basically we got tired of spending days on dataset conversion for data loaders and want to create a benchmark dataset that works for everyone.
 | Why not just use PLY as-is? |	PLY has no conventions for semantic labels, instance IDs, or plant metadata. PPF adds structure without breaking compatibility.|
 | Why not HDF5? |	HDF5 is powerful but has no ecosystem overlap with point cloud tools (CloudCompare, Open3D). PPF files open in any PLY viewer.
 | Why Median-Centered origin instead e.g. using the plant emergence point? | Median-centered origin is robust to outliers and computable without labels. Being able to position unlabeled data the same way as labeled data is crucial for downstream applications of any AI/ML application.

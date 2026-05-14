@@ -1,6 +1,6 @@
 # Plant Point Cloud Format (PPF) Specification
 
-**Version 1.0 — Draft 0.3 planned for a first conference submission in June 2026*
+*Version 1.0 — Draft 0.3 planned for a first conference submission in June 2026*
 
 **Status**: Pre-Submission-Draft — Open for community feedback
 
@@ -31,7 +31,7 @@
 
 ### 1.1 Purpose
 
-The Plant Point Cloud Format (PPF) is a standardized format for representing individual plant point clouds, designed specifically for plant phenotyping, agricultural research, and machine learning applications. Its purpose is to address current challenges in plant point cloud research like inconsistent annotations, missing metadata and time wasted on format conversion. PPF defines a consistent file structure based on PLY with standardized labels formats and flexible but structured metadata conventions. PPF is a free and non-commercial community project created by & for plant point cloud researchers with the goal of making all our lives easier trough on a common standard. Feel invited to suggest improvements or to contribute directly (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+The Plant Point Cloud Format (PPF) is a standardized format for representing individual plant point clouds, designed specifically for plant phenotyping, agricultural research, and machine learning applications. Its purpose is to address current challenges in plant point cloud research like inconsistent annotations, missing metadata and time wasted on format conversion. PPF defines a consistent file structure based on PLY with standardized label formats and flexible but structured metadata conventions. PPF is a free and non-commercial community project created by & for plant point cloud researchers with the goal of making all our lives easier through on a common standard. Feel invited to suggest improvements or to contribute directly (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 
 #### Scope
 
@@ -109,14 +109,17 @@ This ensures every file is self-documenting.
 
 ### 3.1 Mandatory Fields
 
-#### 3.1.1 Header Comments
+#### 3.1.1 Mandatory Header Comments
 
 | Key | Type | Description | Example |
 |-----|------|-------------|---------|
-| ppf_version | string | Specification version | 1.0 |
+| ply | file-type | Every file needs to start with this to ensure PLY format compability | ply |
+| format | encoding-type | Specifies encoding. Must be either: "ascii 1.0" or "binary_little_endian 1.0" |binary_little_endian 1.0 |
+| ppf_version | string | Specification version | ppf_version 1.0 |
 | plant_id | string | Unique identifier for this scan | arabidopsis_001_t0 |
+| element vertex | indicator for number of points | Specifies the number of points provided in the document | element vertex 52134 |
 
-#### 3.1.2 Vertex Properties
+#### 3.1.2 Mandatory Vertex Properties
 
 | Property | Data Type | Description |
 |----------|-----------|-------------|
@@ -140,21 +143,21 @@ end_header
 
 ### 3.2 Conditional Fields
 
-#### 3.2.1 Annotation Vertex Property (required if annotated)
+#### 3.2.1 Annotation Vertex Property (required for annotated point clouds)
 
 | Property | Data Type | Description |
 |----------|-----------|-------------|
-| semantic_id | int | Semantic class ID (see Section 4) |
+| semantic_id | int | Semantic class ID (see [Section 4](#4-label-schema-format)) |
 | instance_id | int | Instance ID within semantic class |
 
 **Instance ID conventions**:
 
 | Value | Meaning |
 |-------|---------|
-| 0 / Missing / NaN | Unlabeled or "stuff" class (no instances) |
+| 0 | Unlabeled or "stuff" class (no instances) |
 | 1, 2, 3, ... | Distinct instance IDs |
 
-**Important**: Instance IDs are unique **within each semantic class**, not globally. An instance_id = 0 indicates that this element has no instance label (valid instance labels start counting with 1).
+***Important***: Instance IDs are unique **within each semantic class**, not globally. An instance_id = 0 indicates that this element has no instance label (valid instance labels start counting with 1).
 When annotating plants we recommend counting the instances bottom-top. Thus, the lowest leaf (closest to emergence point) gets instance_id = 1 and the most upper leaf gets instance_id = max.
 
 This may be very difficult for dense plants - in that case try to follow this recommendation to the best of your ability.
@@ -163,7 +166,7 @@ This may be very difficult for dense plants - in that case try to follow this re
 
 ### 3.3 Recommended Fields (include additional information)
 
-#### 3.3.1 Header Comments
+#### 3.3.1 Recommended Header Comments
 
 | Key | Type | Description | Example |
 |-----|------|-------------|---------|
@@ -193,9 +196,9 @@ The suggested below distinction is not compatible with existing standards in bio
 | structured_light | Structured light scanning |
 | tof | Time-of-flight camera |
 | rgb_d | RGB-D sensor |
-| other | If you user other sensors, please contribute by extending this list!|
+| other | If you use other sensors, please contribute by extending this list!|
 
-#### 3.3.2 Additional Vertex Properties
+#### 3.3.2 Additional Point/Vertex Properties
 
 | Property | Data Type | Description |
 |----------|-----------|-------------|
@@ -211,7 +214,7 @@ The suggested below distinction is not compatible with existing standards in bio
 
 ### 3.4 Optional Extensions
 
-#### 3.4.1 Header Comments
+#### 3.4.1 Optional Header Comments
 
 | Key | Type | Description | Example |
 |-----|------|-------------|---------|
@@ -222,7 +225,7 @@ The suggested below distinction is not compatible with existing standards in bio
 | source_file | string | Original filename | scan_001.las |
 | other | Other/unspecified | |
 
-#### 3.4.2 Vertex Properties
+#### 3.4.2 Optional Point/Vertex Properties
 
 | Property | Data Type | Description |
 |----------|-----------|-------------|
@@ -238,8 +241,8 @@ The suggested below distinction is not compatible with existing standards in bio
 
 ### 4.1 Recommended Base Schema
 
-Use the following IDs for common classes to maximize interoperability. The IDs can be arbitrarilty extended with new custom classes as needed 
-(e.g.: "class" leaflet with ID=11 or class "closed_bud" with ID=24). Avoid double ususage of already listed IDs for another class (even if the listed class is not present in your dataset).
+Use the following IDs for common classes to maximize interoperability. The IDs can be arbitrarily extended with new custom classes as needed 
+(e.g.: "class" leaflet with ID=11 or class "closed_bud" with ID=24). Avoid double usage of already listed IDs for another class (even if the listed class is not present in your dataset).
 
 | ID | Name | Type |
 |----|------|------|
@@ -260,13 +263,12 @@ Use the following IDs for common classes to maximize interoperability. The IDs c
 Custom labels are defined directly in the PLY header. E.g. if you want to distinguish between different kind of leaves within one plant this could look like this:
 
 ```ply
-comment label 0 unlabeled void
-comment label 1 leaf thing
-comment label 2 stem stuff
+comment label 0 unlabeled void       <-- since this specification is identical to PPF base Schema it can be removed
 comment label 10 damaged_leaf thing
 comment label 11 old_leaf thing
 comment label 12 emerging_leaf thing
 ```
+
 ***Important:*** If no label schema is defined, the data will be interpreted according to the recommended base schema presented in [section 4.1](#41-recommended-base-schema). If you use custom labels it is highly recommended not override label IDs used in the base schema. While this is possible and supported by the PPF dataloader, it can lead to confusion and inconsistencies later on or when other researchers want to use your work.
 
 
@@ -308,11 +310,12 @@ comment plant_id ppf_example_begonia_maculata_001_t2
 comment subject_id begonia_maculata_01
 comment timepoint_index 2
 comment species Begonia_maculata
-comment acquisition_date 2025-01-22  ISO 8601 format
+comment acquisition_date 2025-01-22
 comment acquisition_time 13:46:05Z
 comment sensor_type sfm
 comment dataset_name PPF_Example_Dataset
 comment processing_level cleaned
+comment label 10 damaged_leaf thing
 element vertex 15
 property float x
 property float y
@@ -324,12 +327,13 @@ property int semantic_id
 property int instance_id
 end_header
 
-0.0 0.0 0.0 139 69 19 2 
-0.0 0.0 5.0 139 69 19 2
-2.0 1.0 8.0 0 255 0 1 1
-3.0 1.5 9.0 0 255 0 1 1
--2.0 -1.0 8.0 0 200 0 1
--3.0 -1.5 9.0 0 200 0 1
+0.0 0.0 0.0 139 69 19 2 1
+0.0 0.0 5.0 139 69 19 2 1
+2.0 1.0 8.0 0 255 0 10 1
+3.0 1.5 9.0 0 255 0 10 1
+-2.0 -1.0 8.0 0 200 0 7 0
+-3.0 -1.5 9.0 0 200 0 7 0
+
 ```
 
 ---
@@ -373,16 +377,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - Coordinates must match unified format: scaled in mm, Z-up, coordinate origin is median-centered
 
 If annotated:
-  - property int semantic_label
+  - property int semantic_id
   - property int instance_id
-
-If temporal:
-  - comment subject_id
-  - comment timepoint_index
-
-If hierarchical:
-  - property int organ_id
-  - parent_class defined in schema
 
 ```
 
