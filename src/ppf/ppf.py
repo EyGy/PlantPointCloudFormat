@@ -271,35 +271,46 @@ class PPFPointCloud:
         return "\n".join(parts)
     
     def _repr_html_(self) -> str:
-        """Rich HTML display for Jupyter notebooks."""
+        """Rich HTML display for Jupyter notebooks (light & dark mode compatible)."""
         mins = self.points.min(axis=0)
         maxs = self.points.max(axis=0)
         extent = maxs - mins
 
+        # Use rgba with low opacity and inherit text color for dark mode compatibility
         html = f"""
-        <div style="font-family: monospace; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f9f9f9; max-width: 700px;">
-            <h3 style="margin-top:0; color: #2e7d32;">🌱 PPF Point Cloud: {self.plant_id}</h3>
-            <table style="border-collapse: collapse; width: 100%;">
-                <tr><td><b>Points</b></td><td>{self.n_points:,}</td></tr>
-                <tr><td><b>Colors</b></td><td>{'✓' if self.has_colors else '✗'}</td></tr>
-                <tr><td><b>Annotations</b></td><td>{'✓' if self.has_annotations else '✗'}</td></tr>
-                <tr><td><b>Instances</b></td><td>{'✓' if self.has_instances else '✗'}</td></tr>
-                <tr><td><b>Extent (mm)</b></td><td>X={extent[0]:.1f} &times; Y={extent[1]:.1f} &times; Z={extent[2]:.1f}</td></tr>
+        <div style="
+            font-family: monospace;
+            padding: 12px;
+            border: 1px solid rgba(128,128,128,0.3);
+            border-radius: 5px;
+            background: rgba(128,128,128,0.05);
+            max-width: 720px;
+            color: inherit;
+        ">
+            <h3 style="margin-top:0; color: #4caf50;">&#127793; PPF Point Cloud: {self.plant_id}</h3>
+
+            <table style="border-collapse: collapse; width: 100%; color: inherit;">
+                <tr><td style="padding: 2px 8px;"><b>Points</b></td><td style="padding: 2px 8px;">{self.n_points:,}</td></tr>
+                <tr><td style="padding: 2px 8px;"><b>Colors</b></td><td style="padding: 2px 8px;">{'&#10003;' if self.has_colors else '&#10007;'}</td></tr>
+                <tr><td style="padding: 2px 8px;"><b>Annotations</b></td><td style="padding: 2px 8px;">{'&#10003;' if self.has_annotations else '&#10007;'}</td></tr>
+                <tr><td style="padding: 2px 8px;"><b>Instances</b></td><td style="padding: 2px 8px;">{'&#10003;' if self.has_instances else '&#10007;'}</td></tr>
+                <tr><td style="padding: 2px 8px;"><b>Extent (mm)</b></td><td style="padding: 2px 8px;">X={extent[0]:.1f} &times; Y={extent[1]:.1f} &times; Z={extent[2]:.1f}</td></tr>
             </table>
         """
 
+        # Labels table
         if self.effective_labels and self.has_annotations:
             total_annotated = int(np.sum(self.semantic_id != 0))
             html += """
-            <h4 style="margin-bottom: 4px;">Labels</h4>
-            <table style="border-collapse: collapse; width: 100%; font-size: 0.9em;">
-                <tr style="border-bottom: 2px solid #666;">
-                    <th style="text-align:right; padding: 2px 8px;">ID</th>
-                    <th style="text-align:left; padding: 2px 8px;">Name</th>
-                    <th style="text-align:left; padding: 2px 8px;">Type</th>
-                    <th style="text-align:right; padding: 2px 8px;">Points</th>
-                    <th style="text-align:right; padding: 2px 8px;">%</th>
-                    <th style="text-align:right; padding: 2px 8px;">Instances</th>
+            <h4 style="margin-bottom: 4px; margin-top: 12px; color: inherit;">Labels</h4>
+            <table style="border-collapse: collapse; width: 100%; font-size: 0.9em; color: inherit;">
+                <tr style="border-bottom: 2px solid rgba(128,128,128,0.4);">
+                    <th style="text-align:right; padding: 3px 8px;">ID</th>
+                    <th style="text-align:left; padding: 3px 8px;">Name</th>
+                    <th style="text-align:left; padding: 3px 8px;">Type</th>
+                    <th style="text-align:right; padding: 3px 8px;">Points</th>
+                    <th style="text-align:right; padding: 3px 8px;">%</th>
+                    <th style="text-align:right; padding: 3px 8px;">Instances</th>
                 </tr>
             """
             for label in sorted(self.effective_labels, key=lambda l: l.id):
@@ -311,21 +322,62 @@ class PPFPointCloud:
                 if self.has_instances and label.type == "thing":
                     instances = np.unique(self.instance_id[self.semantic_id == label.id])
                     inst_str = str(len(instances[instances > 0]))
-                color = "#e8f5e9" if label.type == "thing" else "#fff3e0" if label.type == "stuff" else "#eeeeee"
+
+                # Semi-transparent backgrounds work in both light and dark mode
+                if label.type == "thing":
+                    bg = "rgba(76, 175, 80, 0.1)"
+                elif label.type == "stuff":
+                    bg = "rgba(255, 152, 0, 0.1)"
+                else:
+                    bg = "rgba(128, 128, 128, 0.1)"
+
                 html += f"""
-                <tr style="background: {color};">
-                    <td style="text-align:right; padding: 2px 8px;">{label.id}</td>
-                    <td style="padding: 2px 8px;">{label.name}</td>
-                    <td style="padding: 2px 8px;">{label.type}</td>
-                    <td style="text-align:right; padding: 2px 8px;">{n_pts:,}</td>
-                    <td style="text-align:right; padding: 2px 8px;">{pct:.1f}%</td>
-                    <td style="text-align:right; padding: 2px 8px;">{inst_str}</td>
+                <tr style="background: {bg};">
+                    <td style="text-align:right; padding: 3px 8px;">{label.id}</td>
+                    <td style="padding: 3px 8px;">{label.name}</td>
+                    <td style="padding: 3px 8px;"><code>{label.type}</code></td>
+                    <td style="text-align:right; padding: 3px 8px;">{n_pts:,}</td>
+                    <td style="text-align:right; padding: 3px 8px;">{pct:.1f}%</td>
+                    <td style="text-align:right; padding: 3px 8px;">{inst_str}</td>
                 </tr>
                 """
             html += f"""
             </table>
-            <p style="font-size: 0.85em; color: #555;">Coverage: {100.0 * total_annotated / self.n_points:.1f}% annotated</p>
+            <p style="font-size: 0.85em; opacity: 0.7;">
+                Coverage: {100.0 * total_annotated / self.n_points:.1f}% annotated
+            </p>
             """
+
+        # Metadata table
+        if self.metadata:
+            html += """
+            <h4 style="margin-bottom: 4px; margin-top: 12px; color: inherit;">Metadata</h4>
+            <table style="border-collapse: collapse; width: 100%; font-size: 0.9em; color: inherit;">
+            """
+            for key, val in self.metadata.items():
+                html += f"""
+                <tr style="border-bottom: 1px solid rgba(128,128,128,0.15);">
+                    <td style="padding: 2px 8px; opacity: 0.8;"><b>{key}</b></td>
+                    <td style="padding: 2px 8px;">{val}</td>
+                </tr>
+                """
+            html += "</table>"
+
+        # Extra properties
+        if self.extra_properties:
+            html += """
+            <h4 style="margin-bottom: 4px; margin-top: 12px; color: inherit;">Extra Properties</h4>
+            <table style="border-collapse: collapse; width: 100%; font-size: 0.9em; color: inherit;">
+            """
+            for name, arr in self.extra_properties.items():
+                html += f"""
+                <tr style="border-bottom: 1px solid rgba(128,128,128,0.15);">
+                    <td style="padding: 2px 8px;"><b>{name}</b></td>
+                    <td style="padding: 2px 8px;"><code>{arr.dtype}</code></td>
+                    <td style="padding: 2px 8px;">[{arr.min():.3g} .. {arr.max():.3g}]</td>
+                </tr>
+                """
+            html += "</table>"
 
         html += "</div>"
         return html

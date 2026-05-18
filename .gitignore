@@ -1,3 +1,4 @@
 .gitignore
+__pycache__
 /local_docs_not_to_push
 /NEW_CODE

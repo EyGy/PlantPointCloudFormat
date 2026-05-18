@@ -35,6 +35,31 @@ from .ppf import (
     PPFPointCloud,
 )
 
+def transfer_metadata(
+    edited_file: str,
+    original_file: str,
+    output_file: str,
+    re_center = False,
+):
+    """
+    Re-applies PPF metadata from an original file to a edited file.
+    Tools like CloudCompare may override PPF headers.    
+    Use this after manual editing (e.g., correcting labels) in CloudCompare.
+    """
+    original = read_ppf(original_file)
+    edited = read_ppf(edited_file)  # will load with missing metadata
+    
+    # Carry over metadata and labels from original
+    edited.metadata = original.metadata
+    edited.labels = original.labels
+    
+    # Optionally re-center if editor changed coordinates
+    if re_center:
+        edited.points -= np.median(edited.points, axis=0)
+    
+    write_ppf(edited, output_file)
+    print(f"Transferred PPF metadata from: {original_file} to {output_file}")
+
 # =============================================================================
 # Reader
 # =============================================================================

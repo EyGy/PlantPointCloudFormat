@@ -21,6 +21,7 @@ __all__ = [
     "LabelDefinition",
     "read_ppf",
     "write_ppf",
+    "transfer_metadata",
     "validate_ppf",
     "ValidationResult",
 ]
