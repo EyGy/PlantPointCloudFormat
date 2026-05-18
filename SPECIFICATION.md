@@ -4,7 +4,7 @@
 
 **Status**: Pre-Submission-Draft — Open for community feedback
 
-**Last Updated**: 2026-05-14 (YYYY-MM-DD)
+**Last Updated**: 2026-05-18 (YYYY-MM-DD)
 
 ---
 
@@ -67,6 +67,7 @@ PLY files are supported by Open3D, trimesh, plyfile, CloudCompare, MeshLab, and 
 | Context | Encoding | Rationale |
 |---------|----------|-----------|
 | Distribution | binary_little_endian | Compact, fast |
+| PLY Compatibility | binary_big_endian | While little_endian is the preferred binary format,big_endian is allowed in PLY and thus supported by PPF to ensure compatibility 
 | Debugging / Examples | ascii | Human-readable |
 
 **Requirement**: PPF-compliant tools MUST support both encodings.
@@ -109,15 +110,23 @@ This ensures every file is self-documenting.
 
 ### 3.1 Mandatory Fields
 
-#### 3.1.1 Mandatory Header Comments
+#### 3.1.1 Mandatory PPF Header 
+
+PPF files are based on PLY, so the standard PLY header lines are mandatory:
 
 | Key | Type | Description | Example |
 |-----|------|-------------|---------|
-| ply | file-type | Every file needs to start with this to ensure PLY format compability | ply |
-| format | encoding-type | Specifies encoding. Must be either: "ascii 1.0" or "binary_little_endian 1.0" |binary_little_endian 1.0 |
+| ply | file-type | Every file needs to start with this to ensure PLY format compatibility | ply |
+| format | encoding-type | Specifies encoding. use either: "ascii 1.0" or "binary_little_endian 1.0" ("binary_big_endian 1.0" is supported but not recommend) |binary_little_endian 1.0 |
+| element vertex | indicator for number of points | Specifies the number of points provided in the document | element vertex 52134 |
+
+Additionally PPF files have to include two mandatory comments:
+
+| Key | Type | Description | Example |
+|-----|------|-------------|---------|
 | ppf_version | string | Specification version | ppf_version 1.0 |
 | plant_id | string | Unique identifier for this scan | arabidopsis_001_t0 |
-| element vertex | indicator for number of points | Specifies the number of points provided in the document | element vertex 52134 |
+
 
 #### 3.1.2 Mandatory Vertex Properties
 
@@ -128,7 +137,6 @@ This ensures every file is self-documenting.
 | z | float | Z coordinate (mm) |
 
 #### 3.1.3 Minimal Valid Header
-
 ```ply
 ply
 format binary_little_endian 1.0
@@ -141,21 +149,26 @@ property float z
 end_header
 ```
 
+This is the minimal header for a legit PPF file. At this point we could just use PLY so the real value that PPF is adding comes with structured header comments to extend this minimal version.
+
+
 ### 3.2 Conditional Fields
 
-#### 3.2.1 Annotation Vertex Property (required for annotated point clouds)
+#### 3.2.1 Annotation Vertex Property ( for annotated point clouds)
 
 | Property | Data Type | Description |
 |----------|-----------|-------------|
 | semantic_id | int | Semantic class ID (see [Section 4](#4-label-schema-format)) |
 | instance_id | int | Instance ID within semantic class |
 
+Semantic IDs are required for instance IDs to work. Semantic IDs can be used without instance IDs.
+
 **Instance ID conventions**:
 
 | Value | Meaning |
 |-------|---------|
 | 0 | Unlabeled or "stuff" class (no instances) |
-| 1, 2, 3, ... | Distinct instance IDs |
+| 1, 2, 3, ... | Distinct instance IDs (see [Section 4](#4-label-schema-format)) |
 
 ***Important***: Instance IDs are unique **within each semantic class**, not globally. An instance_id = 0 indicates that this element has no instance label (valid instance labels start counting with 1).
 When annotating plants we recommend counting the instances bottom-top. Thus, the lowest leaf (closest to emergence point) gets instance_id = 1 and the most upper leaf gets instance_id = max.
@@ -176,10 +189,11 @@ This may be very difficult for dense plants - in that case try to follow this re
 | sensor_type | string | Acquisition modality | See vocabulary below |
 | plant_category | string | Grouping to identify structurally similar plants | See vocabulary below |
 | dataset_name | string | Parent dataset identifier | BonnBeetClouds |
+|other | |This list can be arbitrarily extended based on the available metadata of your dataset | Timepoint inexing, organ hiearchy, etc.
 
-**OPEN TODO: Plant category vocabulary**:
+**Plant category vocabulary**:
 
-The suggested below distinction is not compatible with existing standards in biology. This needs adaptation!
+The suggested below distinction is a purley structural distinction for the AI/ML benchmark datasets that will follow upon the release of PPF.
 | Value | Description |
 |-------|-------------|
 | monocot | Monocotyl plants (sorghum/maize/wheat) |
@@ -244,30 +258,34 @@ The suggested below distinction is not compatible with existing standards in bio
 Use the following IDs for common classes to maximize interoperability. The IDs can be arbitrarily extended with new custom classes as needed 
 (e.g.: "class" leaflet with ID=11 or class "closed_bud" with ID=24). Avoid double usage of already listed IDs for another class (even if the listed class is not present in your dataset).
 
-| ID | Name | Type |
-|----|------|------|
-| 0 | unlabeled | void |
-| 1 | leaf | thing |
-| 2 | stem | thing |
-| 3 | petiole | thing |
-| 4 | flower | thing |
-| 5 | fruit | thing |
-| 6 | root | thing |
-| 7 | medium (soil, coco, etc.)| stuff |
-| 8 | pot | stuff |
+| ID | Name | Type | PO Term | PO ID |Explanation |
+|----|------|------|------|------|----|
+| 0 | unlabeled | void ||||
+| 1 | leaf | thing |vascular leaf|PO:0009025||
+| 2 | stem | thing |stem|PO:0009047| For single-stem plants this could also be type "stuff"|
+| 3 | petiole | thing |petiole|PO:0020038||
+| 4 | branch | thing |branch|PO:0025073||
+| 5 | flower | thing |flower|PO:0009046||
+| 6 | fruit | thing |fruit|PO:0009001||
+| 7 | root | thing |root system|PO:0009005||
+| 8 | substrate | stuff ||| Soil, coco, or other growth medium|
+| 9 | pot | stuff |||Container/box containing the substrate|
 ---
 
 ***Important:*** If your data uses a different label encoding, it must be defined in the PLY header as proposed in [section 4.2](#42-custom-label-encoding-schema).
+
+***Biological Reference:*** Where applicable, labels are mapped to terms from the [Plant Ontology (PO; Jaiswal et al., 2005)](https://onlinelibrary.wiley.com/doi/10.1002/cfg.496). These mappings are informational — PPF tools are not required to interpret or store PO identifiers. Non-plant structures (substrate, pot) have no PO mapping.
 
 ### 4.2 Custom Label Encoding Schema
 Custom labels are defined directly in the PLY header. E.g. if you want to distinguish between different kind of leaves within one plant this could look like this:
 
 ```ply
-comment label 0 unlabeled void       <-- since this specification is identical to PPF base Schema it can be removed
+comment label 0 unlabeled void       
 comment label 10 damaged_leaf thing
 comment label 11 old_leaf thing
 comment label 12 emerging_leaf thing
 ```
+*Note:* Since the specification of ```comment label 0 unlabeled void``` is identical to PPF base schema it could also be left out in this example. For not specified labels the base schema is applied automatically.
 
 ***Important:*** If no label schema is defined, the data will be interpreted according to the recommended base schema presented in [section 4.1](#41-recommended-base-schema). If you use custom labels it is highly recommended not override label IDs used in the base schema. While this is possible and supported by the PPF dataloader, it can lead to confusion and inconsistencies later on or when other researchers want to use your work.
 
@@ -279,7 +297,7 @@ See the examples/ directory for complete example files:
 | Example | Description |
 |---------|-------------|
 | minimal_example.ply | Simplest valid PPF file |
-| full_example.ply | All features demonstrated |
+| full_example.ply | Verbose PPF example |
 
 ### 5.1 Minimal Example
 
@@ -306,7 +324,7 @@ end_header
 ply
 format ascii 1.0
 comment ppf_version 1.0
-comment plant_id ppf_example_begonia_maculata_001_t2
+comment plant_id ppf_example_plant_001_t2
 comment subject_id begonia_maculata_01
 comment timepoint_index 2
 comment species Begonia_maculata
@@ -316,7 +334,7 @@ comment sensor_type sfm
 comment dataset_name PPF_Example_Dataset
 comment processing_level cleaned
 comment label 10 damaged_leaf thing
-element vertex 15
+element vertex 15123
 property float x
 property float y
 property float z
@@ -333,7 +351,7 @@ end_header
 3.0 1.5 9.0 0 255 0 10 1
 -2.0 -1.0 8.0 0 200 0 7 0
 -3.0 -1.5 9.0 0 200 0 7 0
-
+...more points follow...
 ```
 
 ---
@@ -344,9 +362,9 @@ See the reference/ directory for Python implementation:
 
 | File | Contents |
 |------|----------|
-| ppf_io.py | Read/write functions |
-| ppf_dataset.py | Dataset loading |
-| ppf_validate.py | Validation utilities |
+| ppf.py | PPF class definition and hardcoded global variables (e.g. label base schema) |
+| io.py | Read/write functions |
+| validate.py | Validation utilities |
 
 ---
 
@@ -365,22 +383,24 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
-## Appendix A: Quick Reference
+## Appendix A: Quick Checklist
 
-### File Checklist
+### File Checklist - is your file ready for PPF?
 
-```
-- format binary_little_endian 1.0
-- comment ppf_version 1.0
-- comment plant_id [unique_id]
-- property float x/y/z
-- Coordinates must match unified format: scaled in mm, Z-up, coordinate origin is median-centered
+- Is your plant point cloud
+  - Coordinates scaled in mm
+  - Oriented with Z-axis up
+  - Coordinate origin median-centered
+- Does the file header comply with PLY standards?
 
-If annotated:
+- Does it contain additional information as PLY comments?
+  - comment ppf_version 1.0
+  - comment plant_id [unique_id]
+  - additional metadata as comments
+
+- Are annotations encoded as per point vlaues?
   - property int semantic_id
   - property int instance_id
-
-```
 
 ---
 
