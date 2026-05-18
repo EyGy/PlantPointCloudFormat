@@ -35,30 +35,6 @@ from .ppf import (
     PPFPointCloud,
 )
 
-def transfer_metadata(
-    edited_file: str,
-    original_file: str,
-    output_file: str,
-    re_center = False,
-):
-    """
-    Re-applies PPF metadata from an original file to a edited file.
-    Tools like CloudCompare may override PPF headers.    
-    Use this after manual editing (e.g., correcting labels) in CloudCompare.
-    """
-    original = read_ppf(original_file)
-    edited = read_ppf(edited_file)  # will load with missing metadata
-    
-    # Carry over metadata and labels from original
-    edited.metadata = original.metadata
-    edited.labels = original.labels
-    
-    # Optionally re-center if editor changed coordinates
-    if re_center:
-        edited.points -= np.median(edited.points, axis=0)
-    
-    write_ppf(edited, output_file)
-    print(f"Transferred PPF metadata from: {original_file} to {output_file}")
 
 # =============================================================================
 # Reader
@@ -462,3 +438,267 @@ def _write_binary(cloud, filepath, header, endian):
     with open(filepath, "wb") as f:
         f.write(header.encode("ascii"))
         f.write(structured.tobytes())
+
+# =============================================================================
+# Transferring metadata
+# =============================================================================
+
+def transfer_metadata(
+    edited_file: str,
+    original_file: str,
+    output_file: str,
+    re_center: bool = True,
+):
+    """
+    Re-applies PPF metadata from an original file to an edited file.
+
+    Tools like CloudCompare may:
+    - Discard all PPF comment headers
+    - Rename properties (e.g., semantic_id → scalar_semantic_id)
+    - Convert int properties to float/double
+    - Apply coordinate shifts
+
+    This function detects and corrects these issues.
+
+    Parameters
+    ----------
+    edited_file : str
+        Path to the file saved by the external editor.
+    original_file : str
+        Path to the original PPF file (metadata source).
+    output_file : str
+        Path to write the repaired PPF file.
+    re_center : bool
+        If True, re-center coordinates to median origin.
+    """
+    # Only read header from original (fast — skips all point data)
+    original_metadata, original_labels, original_properties = _read_ppf_header_only(
+        original_file
+    )
+    edited = read_ppf(edited_file)
+
+    # -----------------------------------------------------------------
+    # 1. Fix renamed properties (CloudCompare naming patterns)
+    # -----------------------------------------------------------------
+    _recover_renamed_properties(edited, original_properties)
+
+    # -----------------------------------------------------------------
+    # 2. Fix type conversions (float back to int for label fields)
+    # -----------------------------------------------------------------
+    if edited.semantic_id is not None and edited.semantic_id.dtype != np.int32:
+        warnings.warn(
+            f"semantic_id was {edited.semantic_id.dtype}, converting to int32.",
+            UserWarning,
+        )
+        edited.semantic_id = np.rint(edited.semantic_id).astype(np.int32)
+
+    if edited.instance_id is not None and edited.instance_id.dtype != np.int32:
+        warnings.warn(
+            f"instance_id was {edited.instance_id.dtype}, converting to int32.",
+            UserWarning,
+        )
+        edited.instance_id = np.rint(edited.instance_id).astype(np.int32)
+
+    # Restore original dtypes for all extra properties
+    for prop_name, arr in list(edited.extra_properties.items()):
+        if prop_name in original_properties:
+            orig_type = original_properties[prop_name]
+            target_dtype = PLY_TYPE_MAP.get(orig_type, None)
+            if target_dtype and np.issubdtype(target_dtype, np.integer) and np.issubdtype(arr.dtype, np.floating):
+                warnings.warn(
+                    f"Property '{prop_name}': {arr.dtype} → {target_dtype}",
+                    UserWarning,
+                )
+                edited.extra_properties[prop_name] = np.rint(arr).astype(target_dtype)
+
+    # -----------------------------------------------------------------
+    # 3. Carry over metadata and labels from original
+    # -----------------------------------------------------------------
+    edited.metadata = original_metadata.copy()
+    edited.labels = list(original_labels)
+
+    # -----------------------------------------------------------------
+    # 4. Optionally re-center
+    # -----------------------------------------------------------------
+    if re_center:
+        median = np.median(edited.points, axis=0)
+        edited.points -= median.astype(edited.points.dtype)
+
+    # -----------------------------------------------------------------
+    # 5. Write repaired file
+    # -----------------------------------------------------------------
+    write_ppf(edited, output_file)
+    print(f"Transferred PPF metadata from: {original_file} to {output_file}")
+
+
+def _read_ppf_header_only(filepath: str):
+    """
+    Read ONLY the header of a PPF file. Skips all point data.
+    
+    Returns
+    -------
+    metadata : dict
+    labels : list[LabelDefinition]
+    properties : dict[str, str]
+        Mapping of property name → PLY type string (e.g., {"organ_id": "int"})
+    """
+    metadata = {}
+    labels = []
+    properties = {}  # name → ply_type
+
+    with open(filepath, "rb") as f:
+        magic = f.readline().decode("ascii").strip()
+        if magic != "ply":
+            raise ValueError(f"Not a PLY file: {filepath}")
+
+        while True:
+            line = f.readline().decode("ascii").strip()
+            if line == "end_header":
+                break
+
+            if line.startswith("comment "):
+                content = line[8:]  # strip "comment "
+                if content.startswith("label "):
+                    parts = content.split()
+                    # "label <id> <name> <type>"
+                    if len(parts) >= 4:
+                        labels.append(LabelDefinition(
+                            id=int(parts[1]),
+                            name=parts[2],
+                            type=parts[3],
+                        ))
+                else:
+                    # Key-value metadata: first word is key, rest is value
+                    parts = content.split(None, 1)
+                    if len(parts) == 2:
+                        metadata[parts[0]] = parts[1]
+                    elif len(parts) == 1:
+                        metadata[parts[0]] = ""
+
+            elif line.startswith("property ") and "list" not in line:
+                parts = line.split()
+                # "property <type> <name>"
+                if len(parts) == 3:
+                    properties[parts[2]] = parts[1]
+
+    return metadata, labels, properties
+
+
+def _recover_renamed_properties(cloud: PPFPointCloud, original_properties: dict):
+    """
+    Detect and recover properties renamed by CloudCompare.
+    
+    Uses the original file's property list as ground truth.
+    Matches renamed properties by normalized name comparison.
+    
+    CloudCompare patterns:
+    - "prop_name" → "scalar_prop_name"
+    - "prop_name" → "Scalar field - prop_name"
+    - "prop_name" → "prop_name_0"
+    """
+    # Known PPF core properties that are handled as dedicated fields
+    CORE_PROPERTIES = {"x", "y", "z", "red", "green", "blue", "semantic_id", "instance_id"}
+
+    # Build expected extra properties from original (exclude core)
+    expected_extras = {
+        name for name in original_properties if name not in CORE_PROPERTIES
+    }
+
+    if not expected_extras or not cloud.extra_properties:
+        # Also try to recover semantic_id / instance_id from extras
+        _recover_core_from_extras(cloud)
+        return
+
+    # Build normalized lookup for the edited file's extra properties
+    # normalized_key → actual_key
+    edited_lookup = {}
+    for key in cloud.extra_properties:
+        norm = _normalize_property_name(key)
+        edited_lookup[norm] = key
+
+    # For each expected property not already present, try to find it
+    for expected_name in expected_extras:
+        # Already correctly named?
+        if expected_name in cloud.extra_properties:
+            continue
+
+        # Try normalized matching
+        expected_norm = _normalize_property_name(expected_name)
+        if expected_norm in edited_lookup:
+            actual_key = edited_lookup[expected_norm]
+            warnings.warn(
+                f"Recovered property '{expected_name}' from '{actual_key}'.",
+                UserWarning,
+            )
+            cloud.extra_properties[expected_name] = cloud.extra_properties.pop(actual_key)
+            continue
+
+        # Try CloudCompare-specific prefixes
+        cc_variants = [
+            f"scalar_{expected_name}",
+            f"scalar field - {expected_name}",
+            f"{expected_name}_0",
+        ]
+        for variant in cc_variants:
+            variant_norm = _normalize_property_name(variant)
+            if variant_norm in edited_lookup:
+                actual_key = edited_lookup[variant_norm]
+                warnings.warn(
+                    f"Recovered property '{expected_name}' from '{actual_key}'.",
+                    UserWarning,
+                )
+                cloud.extra_properties[expected_name] = cloud.extra_properties.pop(actual_key)
+                break
+
+    # Also recover core properties if they ended up in extras
+    _recover_core_from_extras(cloud)
+
+
+def _recover_core_from_extras(cloud: PPFPointCloud):
+    """Recover semantic_id and instance_id from extra_properties if missing."""
+    
+    SEMANTIC_PATTERNS = (
+        "semantic_id", "scalar_semantic_id", "scalar field - semantic_id",
+        "semantic_id_0", "semanticid", "semantic", "label",
+        "class", "classification",
+    )
+    INSTANCE_PATTERNS = (
+        "instance_id", "scalar_instance_id", "scalar field - instance_id",
+        "instance_id_0", "instanceid", "instance",
+    )
+
+    if cloud.semantic_id is None and cloud.extra_properties:
+        for pattern in SEMANTIC_PATTERNS:
+            match = _find_property_ci(cloud.extra_properties, pattern)
+            if match is not None:
+                warnings.warn(
+                    f"Recovered semantic_id from '{match}'.",
+                    UserWarning,
+                )
+                cloud.semantic_id = np.rint(cloud.extra_properties.pop(match)).astype(np.int32)
+                break
+
+    if cloud.instance_id is None and cloud.extra_properties:
+        for pattern in INSTANCE_PATTERNS:
+            match = _find_property_ci(cloud.extra_properties, pattern)
+            if match is not None:
+                warnings.warn(
+                    f"Recovered instance_id from '{match}'.",
+                    UserWarning,
+                )
+                cloud.instance_id = np.rint(cloud.extra_properties.pop(match)).astype(np.int32)
+                break
+
+
+def _normalize_property_name(name: str) -> str:
+    """Normalize property name for comparison: lowercase, strip all delimiters."""
+    return name.lower().replace(" ", "").replace("-", "").replace("_", "")
+
+
+def _find_property_ci(properties: dict, pattern: str) -> Optional[str]:
+    """Case-insensitive normalized property name search."""
+    pattern_norm = _normalize_property_name(pattern)
+    for key in properties:
+        if _normalize_property_name(key) == pattern_norm:
+            return key
+    return None

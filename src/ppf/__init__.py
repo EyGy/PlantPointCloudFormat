@@ -12,7 +12,7 @@ by the maintainers. It is not entirely vibe-coded, but created with AI assistanc
 """
 from .ppf import PPFPointCloud, LabelDefinition, DEFAULT_LABELS, DEFAULT_LABEL_BY_ID, DEFAULT_LABEL_BY_NAME
 
-from .io import read_ppf, write_ppf
+from .io import read_ppf, write_ppf, transfer_metadata
 from .validate import validate_ppf, ValidationResult
 
 __version__ = "1.0.0"

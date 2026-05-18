@@ -254,6 +254,44 @@ class PPFPointCloud:
             for iid in unique_ids
         }
 
+    def copy(self, deep: bool = True) -> "PPFPointCloud":
+        """
+        Create a copy of this point cloud.
+
+        Parameters
+        ----------
+        deep : bool, default True
+            If True, numpy arrays are fully copied (independent memory).
+            If False, arrays are shared (faster, but mutations affect both).
+
+        Returns
+        -------
+        PPFPointCloud
+            A new PPFPointCloud instance.
+        """
+        if deep:
+            return PPFPointCloud(
+                points=self.points.copy(),
+                metadata=self.metadata.copy(),
+                labels=list(self.labels),
+                semantic_id=self.semantic_id.copy() if self.semantic_id is not None else None,
+                instance_id=self.instance_id.copy() if self.instance_id is not None else None,
+                colors=self.colors.copy() if self.colors is not None else None,
+                extra_properties={
+                    k: v.copy() for k, v in self.extra_properties.items()
+                },
+            )
+        else:
+            return PPFPointCloud(
+                points=self.points,
+                metadata=self.metadata.copy(),  # still copy dict (shallow but new container)
+                labels=list(self.labels),
+                semantic_id=self.semantic_id,
+                instance_id=self.instance_id,
+                colors=self.colors,
+                extra_properties=dict(self.extra_properties),
+            )
+    
     def __repr__(self) -> str:
         parts = [
             f"PPFPointCloud(",
