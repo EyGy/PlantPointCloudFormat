@@ -27,14 +27,11 @@ pip install !!TODO!!
 ### Reading a PPF File
 
 ```python
-TODO
-```
+import ppf
 
-### Loading a Dataset
-
-```python
-TODO
+plant = ppf.read_ppf(filepath="full_ppf_example_begonia.ply")
 ```
+Refer to the example notebook for further use [Example Notebook](examples/ppf_example_notebook.ipynb)
 
 ---
 
