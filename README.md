@@ -1,6 +1,6 @@
 # Plant Point Cloud Format (PPF)
 
-[![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md)
+[![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md) [![Example Notebook](https://img.shields.io/badge/PPFv1.0-example_Notebook-green.svg)](examples/ppf_example_notebook.ipynb)
 
 **A standardized format for 3D plant point clouds in phenotyping and agricultural applications.**
 
@@ -27,15 +27,15 @@ pip install git+https://github.com/EyGy/PlantPointCloudFormat.git
 ```
 ### From PyPI (upon 1st stable release)
 ```bash
-[NOT AVAILABLE YET] pip install ppf
+[! NOT AVAILABLE YET] pip install ppf
 ```
 ## Quick Start
-#### Reading a PPF File
+#### Reading a PPF file
 
 ```python
 import ppf
 
-plant = ppf.read_ppf(filepath="full_ppf_example_begonia.ply")
+plant = ppf.read_ppf(filepath="examples/example_begonia_ppf.ply")
 ```
 Refer to the [Example Notebook](examples/ppf_example_notebook.ipynb) for further use or a preview. 
 
@@ -43,6 +43,20 @@ Refer to the [Example Notebook](examples/ppf_example_notebook.ipynb) for further
 Editing PPF files with viewers like CloudCompare or Meshlab will overwrite PPF metadata. To avoid this save the edited point cloud separately and use this function to restore metadata:
 ```python
 ppf.transfer_metadata(edited, original, output)
+```
+---
+#### Validating a PPF file via CLI
+For a quick format check it is possible to use the CLI interface:
+```bash
+ppf-validate ../examples/example_begonia_ppf.ply
+```
+Example CLI output:
+```bash
+  [WARN]  Missing recommended field: 'plant_category'
+  [INFO]  No custom labels defined — using PPF base schema for interpretation.
+  [INFO]  200,000 points
+  [INFO]  0 label(s) defined
+  [INFO]  Has RGB colors
 ```
 ---
 
@@ -81,6 +95,7 @@ semantic_label=9 (pot), instance_id=0  ->  "Pot (stuff class)"
 | Why not just use PLY as-is? |	PLY has no conventions for semantic labels, instance IDs, or plant metadata. PPF adds structure without breaking compatibility.|
 | Why not HDF5? |	HDF5 is powerful but has no ecosystem overlap with point cloud tools (CloudCompare, Open3D). PPF files open in any PLY viewer.
 | Why Median-Centered origin instead e.g. using the plant emergence point? | Median-centered origin is robust to outliers and computable without labels. Being able to position unlabeled data the same way as labeled data is crucial for downstream applications of any AI/ML application.
+| What file ending should is use? | We recommend saving your files as .ply to ensure compatibility with the PLY ecosystem. To signal a ppf header it is best practice to save you file as "filename_pff.ply"|
 
 ---
 ## Planned Extensions
@@ -119,7 +134,7 @@ If you use PPF in your research, please cite:
 
 ## Acknowledgments
 
-This work is part of a doctoral research project funded by Fraunhofer Institute for Integrated Circuits (IIS) and the University of Bamberg. It is currently in a pre-release version and not finalized. 
+This work is part of a doctoral research project funded by Fraunhofer Institute for Integrated Circuits (IIS) and supported by Cognitive Systems chair at the University of Bamberg. It is currently in a pre-release version and not finalized. 
 
 Please contact the author for any questions before the first official release. --> andreas.gilson@iis.fraunhofer.de
 
