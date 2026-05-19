@@ -14,10 +14,24 @@ PPF defines a consistent, interoperable way of representing individual plant poi
 PPF is built on the widely-supported PLY format with structured metadata conventions and compatible with all .ply viewers.
 
 See full format specification --> [![Specification Version](https://img.shields.io/badge/PPFv1.0-documentation-blue.svg)](SPECIFICATION.md)
+
 ---
+## Key Features
 
+### Standardized Coordinate System
 
+All PPF point clouds use:
+- **Unit**: Millimeters (mm)
+- **Up axis**: Z-positive
+- **Origin**: Median-centered (median of X, Y, Z coordinates)
 
+### Semantic and Instance Labels follow panoptic labeling scheme
+
+```
+semantic_label=1 (leaf), instance_id=5  ->  "Leaf instance #5"
+semantic_label=9 (pot), instance_id=0  ->  "Pot (stuff class)"
+```
+---
 ## Installation
 
 ### From GitHub (recommended for now)
@@ -30,6 +44,7 @@ pip install git+https://github.com/EyGy/PlantPointCloudFormat.git
 [! NOT AVAILABLE YET] pip install ppf
 ```
 ## Quick Start
+Refer to the [Example Notebook](examples/ppf_example_notebook.ipynb) for a preview. 
 #### Reading a PPF file
 
 ```python
@@ -37,7 +52,7 @@ import ppf
 
 plant = ppf.read_ppf(filepath="examples/example_begonia_ppf.ply")
 ```
-Refer to the [Example Notebook](examples/ppf_example_notebook.ipynb) for further use or a preview. 
+
 
 #### Restoring metadata / PPF headers
 Editing PPF files with viewers like CloudCompare or Meshlab will overwrite PPF metadata. To avoid this save the edited point cloud separately and use this function to restore metadata:
@@ -72,21 +87,7 @@ Example CLI output:
 
 
 ---
-## Key Features
 
-### Standardized Coordinate System
-
-All PPF point clouds use:
-- **Unit**: Millimeters (mm)
-- **Up axis**: Z-positive
-- **Origin**: Median-centered (median of X, Y, Z coordinates)
-
-### Semantic and Instance Labels follow panoptic labeling scheme
-
-```
-semantic_label=1 (leaf), instance_id=5  ->  "Leaf instance #5"
-semantic_label=9 (pot), instance_id=0  ->  "Pot (stuff class)"
-```
 
 ## FAQs
 | Document | Description |
